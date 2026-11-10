@@ -1,6 +1,22 @@
-No — your README should be **one file for one course**, not a bundle of drafts. The two drafts are separate programmes; each gets its own repo and its own README.
+# Inventory Manager — Frontend Engineering Programme
 
-Since we're currently building **Draft 2**, the README above is already correct as-is. Here it is again, clean, ready to drop in as `README.md` at the repo root:
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![Tailwind](https://img.shields.io/badge/Tailwind-3-38bdf8)
+![Bun](https://img.shields.io/badge/Bun-1.x-black)
+
+An 18-class frontend engineering programme that builds **one real application**
+from static shell to deployed, accessible, multi-page app.
+
+**Stack:** Next.js · React · TypeScript · Tailwind CSS · Bun · Git
+**Output:** A deployed Inventory Management System, plus 18 classes of notes,
+exercises, and "under the hood" explanations of what the framework is doing.
+
+**What makes this different:** every concept is taught twice — the raw
+mechanism, then the framework shortcut. The learner finishes able to *explain*
+React and Next.js, not just use them.
+
+→ [Start here: README](#what-this-course-is) · [Class 01](./classes/class-01/notes.md) · [Final deployed app](https://your-vercel-url.vercel.app)
 
 ```markdown
 # Inventory Manager — Frontend-Focused Programme (Draft 2)
