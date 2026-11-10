@@ -1,0 +1,65 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .main-box{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    .first{
+        background-color: red;
+        height: 100px;
+    }
+    .second{
+        background-color: blue;
+        height: 100px;
+    }
+
+</style>
+<body>
+    <div>
+        <h1 id="here">Hello,This is my web World!</h1>
+        <!-- grid box -->
+         <div class="main-box">
+            <div class="first"> one</div>
+            <div class="second"> two</div>
+         </div>
+    </div>
+
+    <!-- here we use class but in tailwind we use className -->
+     <!-- this is where js code is written  -->
+      <!-- CRUD  -->
+    <script>
+
+        // crud operations in js
+        
+        // read the text of the h1 tag using id, which means select the h1 tag using id
+        const get = document.getElementById("here")
+
+        // update the text of the h1 tag using id
+        get.innerHTML= "this is my new text"
+        
+        // UPDATE THE TEXT OF THE DIV USING CLASS
+        const boxing = document.getElementsByClassName("first")[0].innerHTML= "this is my new text"
+        // for css now
+        // UPDATE THE CSS OF THE DIV USING CLASS
+        const newBox = document.getElementsByClassName("second")[0].style.backgroundColor = "green"
+
+        // CREATE A NEW ELEMENT
+        const newElement = document.createElement("div")
+        newElement.innerHTML = "this is my new element"
+
+        // APPEND THE NEW ELEMENT TO THE BODY
+        document.body.appendChild(newElement)
+
+        // delete the new element 
+        document.body.removeChild(newElement)
+
+        
+    </script>
+</body>
+</html>
