@@ -1,0 +1,704 @@
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rivian: Electric Vehicles Designed For Adventure</title>
+<meta name="description" content="Discover Rivian's long-range electric vehicles, innovative EV trucks, SUVs and vans built for adventure." />
+<style>
+  @font-face{font-family:'Adventure';src:url('https://assets.rivian.com/2md5qhoeajym/1Dv0kej9t7tDsPaJlXKU1J/09735d831d661afd8335a2cf9d36310c/Adventure-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:'Adventure';src:url('https://assets.rivian.com/2md5qhoeajym/2KUubGptkAVAoZuBkZ01i8/812892ff786ddbd3305d16883d5a200b/Adventure-SemiBold.woff2') format('woff2');font-weight:600;font-display:swap}
+
+  :root{
+    --stone-10:#212121; --stone-50:#f2f2f2; --stone-100:#fff;
+    --brand-orange:#ffac00; --brand-green:#629b5c; --brand-red:#e84826; --brand-blue:#77afd8;
+    --surface-invert:#151515; --text-primary:#151515; --text-invert:#fff;
+    --radius-mega:80px; --radius-micro:8px;
+    --font-body:'Adventure','Helvetica Neue',Helvetica,Arial,sans-serif;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{font-size:62.5%;scroll-behavior:smooth}
+  body{margin:0;font-family:var(--font-body);background:#fff;color:var(--text-primary);-webkit-font-smoothing:antialiased;line-height:1.4;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer}
+  h1,h2,h3,h4{margin:0;font-weight:500}
+  p{margin:0}
+
+  .skip-link{position:absolute;left:1rem;top:-100px;background:var(--brand-orange);color:#151515;padding:.8rem 1.2rem;z-index:999;transition:top .3s}
+  .skip-link:focus{top:1rem}
+
+  /* NAVBAR */
+  .navbar{position:fixed;top:1.6rem;left:50%;transform:translateX(-50%);width:calc(100% - 3.2rem);max-width:1600px;z-index:100}
+  .navbar__inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:5.6rem;padding:0 1.2rem;background:#fff;border-radius:8px;border:.1px solid rgba(0,0,0,.08);box-shadow:0 2px 10px rgba(0,0,0,.08)}
+  .navbar__logo svg{height:1.4rem;width:auto}
+  .navbar__links{display:flex;gap:.4rem;list-style:none;margin:0;padding:0}
+  .navbar__links button{background:transparent;border:none;padding:.8rem 1.2rem;border-radius:99px;font-size:1.4rem;font-weight:500;color:var(--text-primary);transition:background .2s}
+  .navbar__links button:hover{background:#f2f2f2}
+  .navbar__actions{display:flex;align-items:center;justify-content:flex-end;gap:.8rem}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:.8rem 1.6rem;border-radius:var(--radius-mega);font-size:1.4rem;font-weight:500;border:none;transition:background .2s,color .2s;min-height:4rem}
+  .btn--primary{background:var(--surface-invert);color:#fff}
+  .btn--primary:hover{background:#333}
+  .btn--ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.7)}
+  .btn--ghost:hover{border-width:2px}
+  .btn--ghost-dark{background:transparent;color:var(--text-primary);border:1px solid var(--text-primary)}
+  .navbar__burger{display:none;background:transparent;border:none;width:3.2rem;height:3.2rem}
+  .navbar__burger span{display:block;width:2rem;height:2px;background:var(--text-primary);margin:.4rem auto;transition:transform .3s,opacity .3s}
+  .navbar__burger[aria-expanded="true"] span:nth-child(1){transform:translateY(.6rem) rotate(45deg)}
+  .navbar__burger[aria-expanded="true"] span:nth-child(2){transform:translateY(-.6rem) rotate(-45deg)}
+
+  /* MOBILE MENU */
+  .mobile-menu{position:fixed;inset:0;top:7.2rem;background:#fff;z-index:99;padding:2rem;transform:translateY(-100%);opacity:0;pointer-events:none;transition:transform .3s,opacity .3s;overflow-y:auto}
+  .mobile-menu.is-open{transform:translateY(0);opacity:1;pointer-events:auto}
+  .mobile-menu ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.4rem}
+  .mobile-menu button{width:100%;text-align:left;background:transparent;border:none;padding:1.6rem;font-size:2rem;font-weight:500;border-bottom:1px solid #eee}
+
+  /* HERO */
+  .hero{position:relative;height:90vh;min-height:65rem;background:var(--stone-10);color:#fff;overflow:hidden}
+  .hero__track{display:flex;height:100%;transition:transform .6s ease}
+  .hero__slide{min-width:100%;height:100%;position:relative;flex-shrink:0}
+  .hero__slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .hero__slide::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1) 0%,rgba(0,0,0,0) 40%,rgba(0,0,0,.35) 100%);pointer-events:none}
+  .hero__content{position:absolute;top:50%;left:6rem;transform:translateY(-50%);max-width:48rem;z-index:2;padding:0 2rem}
+  .hero__content h1,.hero__content h2{font-size:clamp(3.2rem,5vw,5.2rem);line-height:1.05;letter-spacing:-.88px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .hero__content p{margin-top:2rem;font-size:1.6rem;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .hero__ctas{display:flex;gap:1.2rem;margin-top:3.2rem;flex-wrap:wrap}
+  .hero__ctas .btn{min-width:16rem;height:5.6rem}
+  .hero__nav{position:absolute;top:50%;transform:translateY(-50%);width:4.8rem;height:4.8rem;border-radius:50%;background:rgba(255,255,255,.9);border:none;display:flex;align-items:center;justify-content:center;z-index:5;transition:background .2s}
+  .hero__nav:hover{background:#fff}
+  .hero__nav svg{width:2.4rem;height:2.4rem}
+  .hero__nav--prev{left:4rem}
+  .hero__nav--next{right:4rem}
+  .hero__dots{position:absolute;bottom:3.2rem;left:50%;transform:translateX(-50%);display:flex;gap:.8rem;padding:.8rem 1.2rem;background:#fff;border-radius:80px;z-index:5}
+  .hero__dot{width:.8rem;height:.8rem;border-radius:99px;background:#ccc;border:none;padding:0;transition:width .3s,background .3s}
+  .hero__dot.is-active{width:2.4rem;background:#000}
+
+  /* SECTIONS */
+  .section{padding:7rem 2rem}
+  .section--light{background:var(--stone-50)}
+  .section--gradient{background:linear-gradient(180deg,#f2f2f2 0%,#8ba8bd 100%)}
+  .section__title{font-size:clamp(3.2rem,4.5vw,5.2rem);text-align:center;letter-spacing:-.88px;margin-bottom:4rem}
+
+  /* VEHICLES */
+  .vehicles{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;max-width:1440px;margin:0 auto}
+  .vehicle{text-align:center;padding:3rem 2rem}
+  .vehicle__model{font-size:clamp(6rem,15vw,14rem);text-transform:uppercase;line-height:1;letter-spacing:-.08em;margin-bottom:1rem}
+  .vehicle__tagline{font-size:2rem;margin-bottom:1rem}
+  .vehicle__price{color:#555;font-size:1.4rem;margin-bottom:2rem}
+  .vehicle__ctas{display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap}
+
+  /* TABS */
+  .tabs{display:flex;justify-content:center;gap:.8rem;margin-bottom:4rem;flex-wrap:wrap}
+  .tabs button{padding:1rem 2rem;border-radius:99px;border:none;font-size:1.4rem;font-weight:500;background:#fff;color:var(--text-primary);transition:background .2s,color .2s}
+  .tabs button.is-active{background:var(--surface-invert);color:#fff}
+  .feature{max-width:88rem;margin:0 auto;text-align:center;transition:opacity .25s}
+  .feature.is-fading{opacity:.3}
+  .feature__media{width:100%;aspect-ratio:16/9;border-radius:16px;object-fit:cover;background:#000;margin-bottom:3.2rem}
+  .feature__text{font-size:1.8rem;line-height:1.5}
+
+  /* CARDS */
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:2rem;max-width:1920px;margin:0 auto}
+  .card{position:relative;border-radius:20px;overflow:hidden;min-height:40rem;color:#fff}
+  .card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+  .card:hover img{transform:scale(1.05)}
+  .card__content{position:relative;z-index:2;padding:3.2rem;height:100%;display:flex;flex-direction:column;justify-content:flex-end;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.65) 100%)}
+  .card__content h3{font-size:clamp(2.4rem,3vw,4.4rem);margin-bottom:1.6rem}
+  .card__content p{font-size:1.6rem;margin-bottom:2.4rem;max-width:48rem}
+
+  /* EXPLORE */
+  .explore{background:linear-gradient(180deg,#000 0%,#5d767d 100%);color:#fff;padding:7rem 2rem}
+  .explore__tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1.7rem;max-width:1920px;margin:0 auto 6rem}
+  .explore__tile{display:flex;flex-direction:column;justify-content:space-between;min-height:15.6rem;padding:2.8rem;border-radius:8px;color:#151515;font-size:2.4rem;font-weight:500;transition:transform .2s}
+  .explore__tile:hover{transform:translateY(-2px)}
+  .explore__tile--shop{background:var(--brand-orange)}
+  .explore__tile--update{background:var(--brand-green)}
+  .explore__tile--trade{background:var(--brand-red)}
+  .explore__tile--service{background:var(--brand-blue)}
+  .explore__tile svg{width:1.6rem;height:1.6rem;align-self:flex-end}
+
+  /* NEWSLETTER */
+  .newsletter{display:flex;flex-wrap:wrap;gap:2rem;justify-content:space-between;align-items:center;background:#000;border-radius:20px;padding:5.6rem;max-width:1920px;margin:0 auto}
+  .newsletter p{font-size:clamp(2rem,2.5vw,3.2rem);max-width:48rem;font-weight:500}
+  .newsletter form{display:flex;gap:1.2rem;flex-wrap:wrap;align-items:flex-end}
+  .newsletter input{padding:1.4rem 1.6rem;border-radius:8px;border:1px solid #444;background:#111;color:#fff;font-size:1.4rem;min-width:22rem}
+  .newsletter input::placeholder{color:#999}
+  .newsletter .btn{background:#fff;color:#000;min-height:5rem}
+  .newsletter__msg{width:100%;font-size:1.4rem;margin-top:1rem}
+  .newsletter__msg.ok{color:#629b5c}
+  .newsletter__msg.err{color:#e84826}
+
+  /* FOOTER */
+  .footer{background:#212121;color:#fff;padding:6rem 2rem 3rem}
+  .footer__inner{max-width:1920px;margin:0 auto;display:flex;flex-wrap:wrap;gap:4rem;justify-content:space-between;align-items:flex-start}
+  .footer nav ul{list-style:none;margin:0 0 2rem;padding:0;display:flex;flex-wrap:wrap;gap:2rem}
+  .footer nav a{font-size:1.4rem;opacity:.85}
+  .footer nav a:hover{opacity:1}
+  .footer__social{display:flex;gap:1.2rem}
+  .footer__social a{width:3.2rem;height:3.2rem;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center}
+  .footer__legal{font-size:1.2rem;opacity:.6;margin-top:3rem}
+
+  /* RESPONSIVE */
+  @media(max-width:1024px){
+    .navbar__links{display:none}
+    .navbar__burger{display:block}
+    .vehicles{grid-template-columns:1fr}
+    .cards{grid-template-columns:1fr}
+    .explore__tiles{grid-template-columns:repeat(2,1fr)}
+    .hero__content{left:3rem}
+  }
+  @media(max-width:640px){
+    .hero__nav{display:none}
+    .hero__content{left:50%;transform:translate(-50%,-50%);text-align:center;width:90%}
+    .hero__ctas{justify-content:center}
+    .explore__tiles{grid-template-columns:1fr}
+    .newsletter{padding:3.2rem}
+    .navbar{top:.8rem;width:calc(100% - 1.6rem)}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  }
+   /* media query is for responsive design of different screen sizes */
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip To Main</a>
+
+<!-- NAVBAR -->
+<header class="navbar" role="banner">
+  <div class="navbar__inner">
+    <a href="/" class="navbar__logo" aria-label="Rivian Home">
+      <svg xmlns="http://www.w3.org/2000/svg" width="409" height="56" fill="none" viewBox="0 0 409 56" aria-hidden="true">
+        <path fill="currentColor" d="M55.717 18.61C55.717 9.22 49.325 0 35.58 0H0v56h11.992V10.069h21.834c6.732 0 9.9 3.28 9.9 8.541 0 5.374-3.225 8.655-9.9 8.655H24.55c-4.185 0-6.561 2.375-6.561 6.561v3.507h6.675c3.11 0 5.43 1.019 7.353 3.507L43.838 56h14.707l-16.46-20.93c8.767-2.036 13.632-7.805 13.632-16.46M158.214 43.33 137.907 0h-12.784l26.699 56h12.784l26.699-56h-12.784zM98.877 0H86.885v56h11.992zM397.375 0v41.576L363.888 0h-13.802v56h11.596V14.368L395.225 56h13.746V0zM283.507 0l-27.491 56h12.783l3.451-7.184c1.414-3.054 3.677-4.412 7.014-4.412h20.816l-2.489-5.26c-1.527-3.281-4.016-4.809-7.693-4.809h-10.634l10.634-22.06L311.054 56h12.784L296.347 0zM229.769 0h-11.992v56h11.992z"/>
+      </svg>
+    </a>
+    <nav aria-label="Main site navigation menu">
+      <ul class="navbar__links">
+        <li><button type="button">Vehicles</button></li>
+        <li><button type="button">Charging</button></li>
+        <li><button type="button">Technology</button></li>
+        <li><button type="button">Discover</button></li>
+        <li><button type="button">Gear Shop</button></li>
+      </ul>
+    </nav>
+    <div class="navbar__actions">
+      <a href="/demo-drive/book" class="btn btn--primary">Demo drive</a>
+      <a href="/auth/login" class="btn" aria-label="Sign in" style="background:#f2f2f2;color:#151515;min-width:4rem;padding:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M8.107 8.748a3.893 3.893 0 1 1 7.786 0 3.893 3.893 0 0 1-7.786 0M12 3.355a5.393 5.393 0 1 0 0 10.786 5.393 5.393 0 0 0 0-10.786M6.069 14.92a4.205 4.205 0 0 0-4.205 4.205v1.518h20.273v-1.518a4.205 4.205 0 0 0-4.206-4.205zm-2.705 4.205a2.705 2.705 0 0 1 2.705-2.705h11.863a2.705 2.705 0 0 1 2.705 2.705v.018H3.364z" clip-rule="evenodd"/></svg>
+      </a>
+      <button class="navbar__burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <ul>
+    <li><button type="button">Vehicles</button></li>
+    <li><button type="button">Charging</button></li>
+    <li><button type="button">Technology</button></li>
+    <li><button type="button">Discover</button></li>
+    <li><button type="button">Gear Shop</button></li>
+    <li><a href="/demo-drive/book" class="btn btn--primary" style="width:100%;margin-top:2rem;">Demo drive</a></li>
+  </ul>
+</div>
+
+<main id="main">
+  <!-- HERO CAROUSEL -->
+  <section class="hero" id="hero" aria-roledescription="carousel" aria-label="Featured highlights">
+    <div class="hero__track" id="heroTrack">
+      <article class="hero__slide" role="group" aria-roledescription="slide" aria-label="1 of 3">
+        <img src="https://media.rivian.com/image/upload/f_auto/q_auto/mobile4MT_smu1du?_a=BAVFB+DW0"
+             srcset="https://media.rivian.com/image/upload/c_limit,w_1024,fl_progressive/f_auto/q_auto/MT-Tablet-Hero2_uayurv?_a=BAVFB+DW0 1024w, https://media.rivian.com/image/upload/c_limit,w_1440,fl_progressive/f_auto/q_auto/MT-Desktop-Hero_lruldg?_a=BAVFB+DW0 1440w, https://media.rivian.com/image/upload/c_limit,w_1920,fl_progressive/f_auto/q_auto/MT-Desktop-Hero_lruldg?_a=BAVFB+DW0 1920w"
+             sizes="100vw" alt="Dark green Rivian SUV on a coastal highway" loading="eager" fetchpriority="high">
+        <div class="hero__content">
+          <h2>R2 is the<br>2027 MotorTrend<br>SUV of the Year</h2>
+          <p>Find out why it earned the title.</p>
+          <div class="hero__ctas">
+            <a href="/configurations/builder/r2" class="btn btn--primary">Design yours</a>
+            <a href="/demo-drive" class="btn btn--ghost">Book a drive</a>
+          </div>
+        </div>
+      </article>
+      <article class="hero__slide" role="group" aria-roledescription="slide" aria-label="2 of 3">
+        <img src="https://media.rivian.com/video/upload/so_0/g_auto/f_auto:image/q_auto/v1/rivian-com/autonomy/2026-event/qte2dpy9cwpnwvtmllay?_a=BAVFB+DW0" alt="Rivian Autonomy and AI Day" loading="lazy">
+        <div class="hero__content">
+          <h2>Designing the next direction</h2>
+          <p>Join us for Rivian Autonomy &amp; AI Day. Livestreaming 10am PT on December 9.</p>
+          <div class="hero__ctas">
+            <a href="/events/autonomy-and-ai-day" class="btn btn--primary">Explore more</a>
+          </div>
+        </div>
+      </article>
+      <article class="hero__slide" role="group" aria-roledescription="slide" aria-label="3 of 3">
+        <img src="https://media.rivian.com/image/upload/f_auto/q_auto/mobile_260115_BRANDON-DELACRUZ_TRI-OFFROAD_0015-FINAL_3_vu1d5q?_a=BAVFB+DW0" alt="Rivian R1S at dusk" loading="lazy">
+        <div class="hero__content">
+          <h2>Get 1.99% APR¹ on select R1</h2>
+          <p>Available on 2027 R1 Performance<br>and select 2026 R1 vehicles.</p>
+          <div class="hero__ctas">
+            <a href="/offers" class="btn btn--primary">See all offers</a>
+            <a href="/configurations/list" class="btn btn--ghost">Shop now</a>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <button class="hero__nav hero__nav--prev" id="heroPrev" aria-label="Previous slide">
+      <svg viewBox="0 0 24 24" fill="#151515" aria-hidden="true"><path d="M11.768 18.768a.328.328 0 0 0 .464 0l.77-.77a.328.328 0 0 0 0-.464l-4.65-4.659h10.32a.328.328 0 0 0 .328-.328v-1.094a.328.328 0 0 0-.328-.328H8.352l4.658-4.65a.328.328 0 0 0 0-.465l-.778-.778a.328.328 0 0 0-.464 0l-6.536 6.536a.328.328 0 0 0 0 .464l6.536 6.536Z"/></svg>
+    </button>
+    <button class="hero__nav hero__nav--next" id="heroNext" aria-label="Next slide">
+      <svg viewBox="0 0 24 24" fill="#151515" aria-hidden="true"><path d="M12.232 5.232a.328.328 0 0 0-.464 0l-.77.77a.328.328 0 0 0 0 .464l4.65 4.659H5.329a.328.328 0 0 0-.328.328v1.094c0 .181.147.328.328.328h10.32l-4.658 4.65a.328.328 0 0 0 0 .465l.778.778a.328.328 0 0 0 .464 0l6.536-6.536a.328.328 0 0 0 0-.464l-6.536-6.536Z"/></svg>
+    </button>
+    <div class="hero__dots" role="tablist" aria-label="Slide selector" id="heroDots">
+      <button class="hero__dot is-active" role="tab" aria-selected="true" aria-label="Slide 1" data-index="0"></button>
+      <button class="hero__dot" role="tab" aria-selected="false" aria-label="Slide 2" data-index="1"></button>
+      <button class="hero__dot" role="tab" aria-selected="false" aria-label="Slide 3" data-index="2"></button>
+    </div>
+  </section>
+
+  <!-- VEHICLES -->
+  <section class="section section--light" aria-labelledby="vehicles-title">
+    <h2 id="vehicles-title" class="section__title">Electric vehicles designed for adventure</h2>
+    <div class="vehicles">
+      <article class="vehicle">
+        <div class="vehicle__model">r1s</div>
+        <p class="vehicle__tagline">All-electric, 7-seat SUV built for making memories.</p>
+        <p class="vehicle__price">From $83,990² · Est. lease $1,209/mo² | EPA est. range 410 mi³</p>
+        <div class="vehicle__ctas">
+          <a href="/r1s" class="btn btn--primary">Explore</a>
+          <a href="/configurations/builder?MODEL=R1S" class="btn btn--ghost-dark">Design yours</a>
+        </div>
+      </article>
+      <article class="vehicle">
+        <div class="vehicle__model">r2</div>
+        <p class="vehicle__tagline">Everything you need to get out there and say yes to new things.</p>
+        <p class="vehicle__price">From $44,990⁴ | Est. range 345 mi³</p>
+        <div class="vehicle__ctas">
+          <a href="/r2" class="btn btn--primary">Explore</a>
+          <a href="/configurations/builder/r2" class="btn btn--ghost-dark">Design yours</a>
+        </div>
+      </article>
+      <article class="vehicle">
+        <div class="vehicle__model">r1t</div>
+        <p class="vehicle__tagline">All-electric truck built for whatever you call a road.</p>
+        <p class="vehicle__price">From $79,990⁵ · Est. lease $1,199/mo⁵ | EPA est. range 420 mi³</p>
+        <div class="vehicle__ctas">
+          <a href="/r1t" class="btn btn--primary">Explore</a>
+          <a href="/configurations/builder?MODEL=R1T" class="btn btn--ghost-dark">Design yours</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- FEATURE TABS -->
+  <section class="section section--gradient" aria-labelledby="features-title">
+    <h2 id="features-title" class="section__title">Built for how you move</h2>
+    <div class="tabs" role="tablist" id="featureTabs">
+      <button class="is-active" data-tab="tech" role="tab" aria-selected="true">Technology</button>
+      <button data-tab="perf" role="tab" aria-selected="false">Performance</button>
+      <button data-tab="design" role="tab" aria-selected="false">Design</button>
+    </div>
+    <div class="feature" id="featurePanel">
+      <img class="feature__media" id="featureMedia" alt="Technology feature" loading="lazy"
+           src="https://media.rivian.com/video/upload/c_scale/w_800/g_auto/f_auto:image/q_auto/v1/rivian-com/rivos20/n6mrtvonzddc1lcmrnan?_a=BAVFB+DW0">
+      <p class="feature__text" id="featureText">
+        From intuitive software to smart headlights to mobile app, Rivians are equipped with technology that helps make driving safer, easier and more fun.
+      </p>
+    </div>
+  </section>
+
+  <!-- SAFETY / SPACES -->
+  <section class="section section--light" aria-labelledby="safety-title">
+    <h2 id="safety-title" class="section__title">Award-winning safety</h2>
+    <p style="text-align:center;max-width:47rem;margin:0 auto 4rem;font-size:1.8rem;">
+      The R1S continues to earn awards for safety — most recently, a 2026 TOP SAFETY PICK+ from the IIHS for the 2026 R1S.
+    </p>
+    <div class="cards">
+      <article class="card">
+        <img src="https://media.rivian.com/image/upload/c_scale/w_582/f_auto/q_auto/v1/rivian-com/spaces/Brooklyn_Hero_Desktop_wwo9hy?_a=BAVFB+DW0" alt="Outside Rivian Brooklyn space" loading="lazy">
+        <div class="card__content">
+          <h3>Brooklyn, NY</h3>
+          <p>366 Wythe Ave, Brooklyn, NY 11249 · Mon–Sun: 10am–7pm</p>
+          <a href="/spaces/brooklyn" class="btn btn--primary" style="width:fit-content;">Explore</a>
+        </div>
+      </article>
+      <article class="card">
+        <img src="https://media.rivian.com/image/upload/c_fill/q_auto/w_1183/g_auto:subject/dpr_2.0/f_auto/q_auto/test2_xnylbk?_a=BAVFB+DW0" alt="Get behind the wheel" loading="lazy">
+        <div class="card__content">
+          <h3>Get behind the wheel</h3>
+          <p>Book a demo drive and experience Rivian on the road.</p>
+          <a href="/demo-drive/book" class="btn btn--ghost">Book a drive</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- CHARGING -->
+  <section class="section" style="background:linear-gradient(#1f2121 0%,#252826 100%);color:#fff;" aria-labelledby="charging-title">
+    <h2 id="charging-title" class="section__title" style="text-align:left;max-width:80rem;margin-left:auto;margin-right:auto;">Ready for electric exploration</h2>
+    <p style="max-width:68rem;margin:0 auto 4rem;text-align:center;font-size:1.8rem;">
+      With up to 420 miles of range and a NACS charge port so you can charge in more places, Rivian makes it easy to get out and explore.
+    </p>
+    <div style="display:flex;justify-content:center;">
+      <a href="/experience/charging" class="btn btn--primary">Explore charging</a>
+    </div>
+  </section>
+
+  <!-- KEEP EXPLORING -->
+  <section class="explore" aria-labelledby="explore-title">
+    <h2 id="explore-title" class="section__title" style="color:#fff;">Keep exploring</h2>
+    <div class="explore__tiles">
+      <a href="/configurations/list?MODEL=R1S" class="explore__tile explore__tile--shop">
+        <span>Shop</span>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.232 5.232a.328.328 0 0 0-.464 0l-.77.77a.328.328 0 0 0 0 .464l4.65 4.659H5.329a.328.328 0 0 0-.328.328v1.094c0 .181.147.328.328.328h10.32l-4.658 4.65a.328.328 0 0 0 0 .465l.778.778a.328.328 0 0 0 .464 0l6.536-6.536a.328.328 0 0 0 0-.464l-6.536-6.536Z"/></svg>
+      </a>
+      <a href="/connect/tell-us-more" class="explore__tile explore__tile--update">
+        <span>Get updates</span>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.232 5.232a.328.328 0 0 0-.464 0l-.77.77a.328.328 0 0 0 0 .464l4.65 4.659H5.329a.328.328 0 0 0-.328.328v1.094c0 .181.147.328.328.328h10.32l-4.658 4.65a.328.328 0 0 0 0 .465l.778.778a.328.328 0 0 0 .464 0l6.536-6.536a.328.328 0 0 0 0-.464l-6.536-6.536Z"/></svg>
+      </a>
+      <a href="/trade-in/vehicle-info" class="explore__tile explore__tile--trade">
+        <span>Trade in</span>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.232 5.232a.328.328 0 0 0-.464 0l-.77.77a.328.328 0 0 0 0 .464l4.65 4.659H5.329a.328.328 0 0 0-.328.328v1.094c0 .181.147.328.328.328h10.32l-4.658 4.65a.328.328 0 0 0 0 .465l.778.778a.328.328 0 0 0 .464 0l6.536-6.536a.328.328 0 0 0 0-.464l-6.536-6.536Z"/></svg>
+      </a>
+      <a href="/experience/service" class="explore__tile explore__tile--service">
+        <span>Service</span>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.232 5.232a.328.328 0 0 0-.464 0l-.77.77a.328.328 0 0 0 0 .464l4.65 4.659H5.329a.328.328 0 0 0-.328.328v1.094c0 .181.147.328.328.328h10.32l-4.658 4.65a.328.328 0 0 0 0 .465l.778.778a.328.328 0 0 0 .464 0l6.536-6.536a.328.328 0 0 0 0-.464l-6.536-6.536Z"/></svg>
+      </a>
+    </div>
+
+    <div class="newsletter">
+      <p>More fully electric adventure is on the way. Sign up to follow along.</p>
+      <form id="newsletterForm" novalidate>
+        <input type="email" id="nlEmail" name="email" placeholder="Email" required aria-label="Email" />
+        <input type="text" id="nlZip" name="zip" placeholder="Zip code" required aria-label="Zip code" maxlength="10" />
+        <button type="submit" class="btn">Subscribe</button>
+        <p class="newsletter__msg" id="nlMsg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer__inner">
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="/r1t">R1T</a></li>
+        <li><a href="/r1s">R1S</a></li>
+        <li><a href="/r2">R2</a></li>
+        <li><a href="/fleet">Fleet</a></li>
+      </ul>
+      <ul>
+        <li><a href="/configurations/list">Shop new inventory</a></li>
+        <li><a href="/configurations/list?INVENTORY_TYPE=PRE_OWNED_VEHICLE">Shop pre-owned</a></li>
+        <li><a href="/spaces">Spaces</a></li>
+        <li><a href="/gear-shop">Gear Shop</a></li>
+        <li><a href="/our-company">Our Company</a></li>
+        <li><a href="/stories">Stories</a></li>
+      </ul>
+    </nav>
+    <div>
+      <div class="footer__social" aria-label="Social links">
+        <a href="https://www.linkedin.com/company/rivian" aria-label="LinkedIn" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.06 3.77-2.06 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.31-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/rivianofficial" aria-label="Instagram" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2c3.2 0 3.58 0 4.85.07 1.17.05 1.96.24 2.42.4.6.24 1.04.52 1.5.98.46.46.74.9.98 1.5.16.46.35 1.25.4 2.42C22.2 8.84 22.2 9.2 22.2 12s0 3.16-.07 4.43c-.05 1.17-.24 1.96-.4 2.42-.24.6-.52 1.04-.98 1.5-.46.46-.9.74-1.5.98-.46.16-1.25.35-2.42.4-1.27.07-1.65.07-4.85.07s-3.58 0-4.85-.07c-1.17-.05-1.96-.24-2.42-.4a4.1 4.1 0 0 1-1.5-.98 4.1 4.1 0 0 1-.98-1.5c-.16-.46-.35-1.25-.4-2.42C1.8 15.16 1.8 14.8 1.8 12s0-3.16.07-4.43c.05-1.17.24-1.96.4-2.42.24-.6.52-1.04.98-1.5.46-.46.9-.74 1.5-.98.46-.16 1.25-.35 2.42-.4C8.42 2.2 8.8 2.2 12 2.2zm0 1.8c-3.14 0-3.5 0-4.74.07-1.14.05-1.76.24-2.17.4-.54.21-.93.46-1.34.87-.41.41-.66.8-.87 1.34-.16.41-.35 1.03-.4 2.17C2.41 10.09 2.4 10.45 2.4 13.6s0 3.5.07 4.74c.05 1.14.24 1.76.4 2.17.21.54.46.93.87 1.34.41.41.8.66 1.34.87.41.16 1.03.35 2.17.4 1.24.07 1.6.07 4.74.07s3.5 0 4.74-.07c1.14-.05 1.76-.24 2.17-.4.54-.21.93-.46 1.34-.87.41-.41.66-.8.87-1.34.16-.41.35-1.03.4-2.17.07-1.24.07-1.6.07-4.74s0-3.5-.07-4.74c-.05-1.14-.24-1.76-.4-2.17a3.6 3.6 0 0 0-.87-1.34 3.6 3.6 0 0 0-1.34-.87c-.41-.16-1.03-.35-2.17-.4C15.5 4 15.14 4 12 4zm0 3.06a4.94 4.94 0 1 1 0 9.88 4.94 4.94 0 0 1 0-9.88zm0 1.8a3.14 3.14 0 1 0 0 6.28 3.14 3.14 0 0 0 0-6.28zm5.14-1.94a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3z"/></svg>
+        </a>
+        <a href="https://x.com/rivian" aria-label="X" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.24 2H21l-6.55 7.48L22 22h-6.36l-4.98-6.5L4.9 22H2.14l7-8L2 2h6.5l4.5 6zm-1.1 18h1.74L7.02 3.86H5.16z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/channel/UCPMdVVKDEUrbp3nH46sTZmg" aria-label="YouTube" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.4-1.9.5-3.8.5-5.8s-.1-3.9-.5-5.8zM9.6 15.6V8.4l6.2 3.6z"/></svg>
+        </a>
+      </div>
+      <p class="footer__legal">© 2026 Rivian. All Rights Reserved. · <a href="/legal/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="/legal">Legal</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+    // define an array of objects for the anchor and their corrsponding hrefs
+    // an array is basically a list of items, and an object is a collection of key value pairs 
+    // to understand key value pairs, think of a dictionary where key is the words and pair is definition of the word 
+    // it is common case of an object to have a key and value pair,
+    // what is an object ? an object in js is collection
+    // the symbol used to define an object is called curly braces {}
+    // the symbol for array is called sqaure brackets []
+    // this structured process of using arrays is easily understandable and maintainable,
+    // const anchorLinks= [
+    //   { anchor: "R1T", 
+    //   href: "/r1t" 
+    // },
+    //   { anchor: "R1S", href: "/r1s" },
+    //   { anchor: "R2", href: "/r2" },
+    //   { anchor: "Fleet", href: "/fleet" },
+    //   { anchor: "Shop new inventory", href: "/configurations/list" },
+    //   { anchor: "Shop pre-owned", href: "/configurations/list?INVENTORY_TYPE=PRE_OWNED_VEHICLE" },
+    //   { anchor: "Spaces", href: "/spaces" },
+    //   { anchor: "Gear Shop", href: "/gear-shop" },
+    //   { anchor: "Our Company", href: "/our-company" },
+    //   { anchor: "Stories", href: "/stories" }
+    // ];
+    // // we need to map through the array and create the anchor tags for the anchorlinks array and append them to the footer nav
+    // const footerNav = document.querySelector('.footer nav ul');
+
+(function () {
+  'use strict';
+
+  /* =========================================================
+     1. HERO CAROUSEL
+     - Prev/next buttons
+     - Dots
+     - Keyboard arrows when hero is in view
+     - Touch swipe
+     - Autoplay every 7s, pauses on hover/focus/reduced-motion
+  ========================================================= */
+  const hero = document.getElementById('hero');
+  const track = document.getElementById('heroTrack');
+  const slides = track ? track.querySelectorAll('.hero__slide') : [];
+  const dots = document.querySelectorAll('#heroDots .hero__dot');
+  const prevBtn = document.getElementById('heroPrev');
+  const nextBtn = document.getElementById('heroNext');
+
+  // this is a control flow statemnt that checks if the track exits and 
+  if (track && slides.length > 1) {
+    let index = 0;
+    const total = slides.length;
+    let autoplayId = null;
+    let isPaused = false;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // goTo is a function that takes and index
+    function goTo(i) {
+      index = (i + total) % total;
+      track.style.transform = 'translateX(-' + index * 100 + '%)';
+      slides.forEach((s, n) => {
+        s.setAttribute('aria-hidden', n === index ? 'false' : 'true');
+      });
+      dots.forEach((d, n) => {
+        const active = n === index;
+        d.classList.toggle('is-active', active);
+        d.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+    }
+
+    function next() { goTo(index + 1); }
+    function prev() { goTo(index - 1); }
+
+    if (nextBtn) nextBtn.addEventListener('click', () => { next(); restartAutoplay(); });
+    if (prevBtn) prevBtn.addEventListener('click', () => { prev(); restartAutoplay(); });
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        goTo(parseInt(dot.dataset.index, 10));
+        restartAutoplay();
+      });
+    });
+
+    // Keyboard: only when hero is visible/focused within
+    hero.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { next(); restartAutoplay(); }
+      if (e.key === 'ArrowLeft') { prev(); restartAutoplay(); }
+    });
+
+    // Touch swipe
+    let touchStartX = 0;
+    let touchEndX = 0;
+    track.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    track.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const dx = touchEndX - touchStartX;
+      if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); restartAutoplay(); }
+    }, { passive: true });
+
+    // Autoplay
+    function startAutoplay() {
+      if (reduceMotion || autoplayId) return;
+      autoplayId = setInterval(() => {
+        if (!isPaused) next();
+      }, 7000);
+    }
+    function stopAutoplay() {
+      if (autoplayId) { clearInterval(autoplayId); autoplayId = null; }
+    }
+    function restartAutoplay() {
+      stopAutoplay();
+      startAutoplay();
+    }
+
+    hero.addEventListener('mouseenter', () => { isPaused = true; });
+    hero.addEventListener('mouseleave', () => { isPaused = false; });
+    hero.addEventListener('focusin', () => { isPaused = true; });
+    hero.addEventListener('focusout', () => { isPaused = false; });
+
+    // Pause when tab is hidden (saves CPU)
+    document.addEventListener('visibilitychange', () => {
+      isPaused = document.hidden;
+    });
+
+    // Init
+    goTo(0);
+    startAutoplay();
+  }
+
+  /* =========================================================
+     2. MOBILE MENU
+  ========================================================= */
+  const burger = document.getElementById('burger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  if (burger && mobileMenu) {
+    function setMenu(open) {
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      mobileMenu.classList.toggle('is-open', open);
+      mobileMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    burger.addEventListener('click', () => {
+      const isOpen = burger.getAttribute('aria-expanded') === 'true';
+      setMenu(!isOpen);
+    });
+    // Close on ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('is-open')) {
+        setMenu(false);
+        burger.focus();
+      }
+    });
+    // Close on link click
+    mobileMenu.querySelectorAll('a, button').forEach((el) => {
+      el.addEventListener('click', () => setMenu(false));
+    });
+    // Reset on resize to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 1024 && mobileMenu.classList.contains('is-open')) {
+        setMenu(false);
+      }
+    });
+  }
+
+  /* =========================================================
+     3. FEATURE TABS
+  ========================================================= */
+  const tabs = document.querySelectorAll('#featureTabs button');
+  const featureMedia = document.getElementById('featureMedia');
+  const featureText = document.getElementById('featureText');
+  const featurePanel = document.getElementById('featurePanel');
+
+  const featureData = {
+    tech: {
+      text: 'From intuitive software to smart headlights to mobile app, Rivians are equipped with technology that helps make driving safer, easier and more fun.',
+      img: 'https://media.rivian.com/video/upload/c_scale/w_800/g_auto/f_auto:image/q_auto/v1/rivian-com/rivos20/n6mrtvonzddc1lcmrnan?_a=BAVFB+DW0',
+      alt: 'Technology feature'
+    },
+    perf: {
+      text: 'Powerful, efficient, truly a joy to drive. Built to go anywhere, on-road and off — with up to 9 drive modes that optimize for the terrain at the touch of a button.',
+      img: 'https://media.rivian.com/video/upload/c_scale/w_800/g_auto/f_auto:image/q_auto/v1/rivian-com/rivos20/pvofoebuxawa06vnthog?_a=BAVFB+DW0',
+      alt: 'Performance feature'
+    },
+    design: {
+      text: 'From innovative storage (yes, there’s a tunnel for gear in the truck) to elevated interiors inspired by nature, every detail is dialed in.',
+      img: 'https://media.rivian.com/video/upload/c_scale/w_800/g_auto/f_auto:image/q_auto/v1/rivian-com/home%20page/hyffvv9lbikq3kj80va6?_a=BAVFB+DW0',
+      alt: 'Design feature'
+    }
+  };
+
+  function setTab(key) {
+    const data = featureData[key];
+    if (!data || !featureMedia || !featureText) return;
+
+    featurePanel.classList.add('is-fading');
+
+    // Swap after short fade
+    setTimeout(() => {
+      featureMedia.src = data.img;
+      featureMedia.alt = data.alt;
+      featureText.textContent = data.text;
+      featurePanel.classList.remove('is-fading');
+    }, 180);
+
+    tabs.forEach((t) => {
+      const active = t.dataset.tab === key;
+      t.classList.toggle('is-active', active);
+      t.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => setTab(tab.dataset.tab));
+    // Arrow key navigation between tabs
+    tab.addEventListener('keydown', (e) => {
+      const arr = Array.from(tabs);
+      const i = arr.indexOf(tab);
+      if (e.key === 'ArrowRight') { arr[(i + 1) % arr.length].focus(); }
+      if (e.key === 'ArrowLeft') { arr[(i - 1 + arr.length) % arr.length].focus(); }
+    });
+  });
+
+  /* =========================================================
+     4. NEWSLETTER VALIDATION
+     - Email format
+     - Zip: 5-digit US or 6-char alphanumeric (Canada friendly)
+  ========================================================= */
+  const nlForm = document.getElementById('newsletterForm');
+  const nlEmail = document.getElementById('nlEmail');
+  const nlZip = document.getElementById('nlZip');
+  const nlMsg = document.getElementById('nlMsg');
+
+  function showMsg(text, kind) {
+    if (!nlMsg) return;
+    nlMsg.textContent = text;
+    nlMsg.className = 'newsletter__msg ' + (kind || '');
+  }
+
+  if (nlForm) {
+    nlForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = (nlEmail.value || '').trim();
+      const zip = (nlZip.value || '').trim();
+
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      const zipOk = /^[A-Za-z0-9][A-Za-z0-9\- ]{3,9}$/.test(zip);
+
+      if (!emailOk) {
+        showMsg('Please enter a valid email address.', 'err');
+        nlEmail.focus();
+        return;
+      }
+      if (!zipOk) {
+        showMsg('Please enter a valid zip / postal code.', 'err');
+        nlZip.focus();
+        return;
+      }
+
+      // In a real build you'd POST to your endpoint here.
+      showMsg('All set. Thanks for subscribing!', 'ok');
+      nlForm.reset();
+    });
+  }
+
+  /* =========================================================
+     5. SMOOTH SCROLL FOR SKIP LINK (progressive enhancement)
+  ========================================================= */
+  document.querySelectorAll('a[href^="#"]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: true });
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -19,6 +19,12 @@ basics are as follows
 using var keyword;
 */
 var cars = ["saab", "volvo", "bmw"];
+// cars here is a variable that stores an array of car names, we can access the values
+// lets look at another example using let keyword 
+let fruits = ["apple", "banana", "orange"];
+// fruits here is a variable that stores an array of fruits 
+// diff btwn var and let is that var is function scoped and let is block scoped , this means that var can be accessed outside of the block it was declared in, while let can only be accessed within the block it was declared in.
+// example of this is as follows:
 
 // what are functions in javascript
 /*functions are blocks of code that can be called and executed when needed, they can take  
@@ -31,6 +37,13 @@ paramters and return values */
   // add (2,3) and it will return 5 
 
 */
+
+
+
+
+
+
+
 // two types of functions exist in react
 // 1. Functional Components
 // 2. Class Components
