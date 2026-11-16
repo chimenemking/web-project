@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>V0 · Foundations of the Web — Before You Write a Line of Code</title>
+<meta name="description" content="What the web is, how it works, why it exists, and the tools you'll use — before you learn HTML." />
+<style>
+  @font-face{font-family:'Adventure';src:url('https://assets.rivian.com/2md5qhoeajym/1Dv0kej9t7tDsPaJlXKU1J/09735d831d661afd8335a2cf9d36310c/Adventure-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:'Adventure';src:url('https://assets.rivian.com/2md5qhoeajym/2KUubGptkAVAoZuBkZ01i8/812892ff786ddbd3305d16883d5a200b/Adventure-SemiBold.woff2') format('woff2');font-weight:600;font-display:swap}
+  @font-face{font-family:'JetBrainsMono';src:url('https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@2.304/fonts/webfonts/JetBrainsMono-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+
+  :root{
+    --stone-5:#f7f7f7; --stone-10:#212121; --stone-50:#f2f2f2; --stone-100:#fff;
+    --brand-orange:#ffac00; --brand-green:#629b5c; --brand-red:#e84826; --brand-blue:#77afd8;
+    --surface-invert:#151515; --text-primary:#151515; --text-muted:#5e5e5e;
+    --radius-mega:80px; --radius-micro:8px; --radius-macro:20px;
+    --rail-w:280px; --nav-h:5.6rem; --nav-top:1.6rem;
+    --font-body:'Adventure','Helvetica Neue',Helvetica,Arial,sans-serif;
+    --font-mono:'JetBrainsMono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{font-size:62.5%;scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + var(--nav-top) + 2rem)}
+  body{margin:0;font-family:var(--font-body);background:#fff;color:var(--text-primary);-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer}
+  h1,h2,h3,h4{margin:0;font-weight:500;letter-spacing:-.02em}
+  p{margin:0}
+  code{font-family:var(--font-mono);font-size:.9em;background:rgba(0,0,0,.05);padding:.1em .4em;border-radius:4px}
+  .section--dark code{background:rgba(255,255,255,.08)}
+
+  .skip-link{position:absolute;left:1rem;top:-100px;background:var(--brand-orange);color:#151515;padding:.8rem 1.2rem;z-index:999;transition:top .3s;border-radius:4px}
+  .skip-link:focus{top:1rem}
+
+  /* NAVBAR */
+  .navbar{position:fixed;top:var(--nav-top);left:50%;transform:translateX(-50%);width:calc(100% - 3.2rem);max-width:1600px;z-index:100}
+  .navbar__inner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;height:var(--nav-h);padding:0 1.2rem 0 1.6rem;background:#fff;border-radius:8px;border:.1px solid rgba(0,0,0,.08);box-shadow:0 2px 10px rgba(0,0,0,.08)}
+  .navbar__brand{display:flex;align-items:center;gap:1rem;font-weight:600;font-size:1.5rem;letter-spacing:-.02em}
+  .navbar__brand svg{height:1.4rem;width:auto}
+  .navbar__badge{font-size:1.1rem;font-weight:600;padding:.2rem .8rem;background:var(--brand-orange);border-radius:99px;color:#151515;letter-spacing:.04em;text-transform:uppercase}
+  .navbar__links{display:flex;gap:.4rem;list-style:none;margin:0;padding:0;justify-self:center}
+  .navbar__links button{background:transparent;border:none;padding:.8rem 1.2rem;border-radius:99px;font-size:1.4rem;font-weight:500;color:var(--text-primary);transition:background .2s}
+  .navbar__links button:hover,.navbar__links button[aria-current="page"]{background:#f2f2f2}
+  .navbar__actions{display:flex;align-items:center;justify-content:flex-end;gap:.8rem}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:.8rem 1.6rem;border-radius:var(--radius-mega);font-size:1.4rem;font-weight:500;border:none;transition:background .2s,color .2s,border-color .2s;min-height:4rem;cursor:pointer;text-align:center}
+  .btn--primary{background:var(--surface-invert);color:#fff}
+  .btn--primary:hover{background:#333}
+  .btn--ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.7)}
+  .btn--ghost:hover{border-width:2px}
+  .btn--ghost-dark{background:transparent;color:var(--text-primary);border:1px solid var(--text-primary)}
+  .btn--ghost-dark:hover{background:var(--text-primary);color:#fff}
+  .navbar__burger{display:none;background:transparent;border:none;width:3.2rem;height:3.2rem;align-items:center;justify-content:center;flex-direction:column;gap:.4rem}
+  .navbar__burger span{display:block;width:2rem;height:2px;background:var(--text-primary);transition:transform .3s,opacity .3s}
+
+  /* LAYOUT */
+  .layout{display:grid;grid-template-columns:var(--rail-w) 1fr;min-height:100vh;padding-top:calc(var(--nav-h) + var(--nav-top) + 1.6rem)}
+  @media(max-width:1024px){.layout{grid-template-columns:1fr}}
+
+  /* RAIL */
+  .rail{position:sticky;top:calc(var(--nav-h) + var(--nav-top) + 1.6rem);height:calc(100vh - var(--nav-h) - var(--nav-top) - 1.6rem);padding:2.8rem 1.6rem 2rem 2.4rem;background:var(--stone-50);border-right:1px solid rgba(0,0,0,.06);overflow-y:auto;z-index:50;font-size:1.3rem}
+  .rail__eyebrow{font-size:1.1rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.2rem}
+  .rail__title{font-size:1.8rem;font-weight:600;margin-bottom:.4rem;letter-spacing:-.02em}
+  .rail__sub{font-size:1.2rem;color:var(--text-muted);margin-bottom:2.4rem;line-height:1.4}
+  .rail__progress{height:3px;background:rgba(0,0,0,.08);border-radius:99px;overflow:hidden;margin-bottom:2.4rem}
+  .rail__progress span{display:block;height:100%;width:0%;background:var(--brand-orange);transition:width .25s ease-out}
+  .rail__list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.1rem}
+  .rail__item{position:relative}
+  .rail__link{display:flex;align-items:flex-start;gap:1rem;padding:.9rem 1rem;border-radius:6px;color:var(--text-muted);line-height:1.35;transition:background .2s,color .2s}
+  .rail__link:hover{background:rgba(0,0,0,.04);color:var(--text-primary)}
+  .rail__mark{flex-shrink:0;width:1.6rem;height:1.6rem;margin-top:.1rem;border-radius:50%;border:1.5px solid rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s,transform .2s;font-size:1rem;color:#fff}
+  .rail__link.is-visited .rail__mark{background:var(--text-primary);border-color:var(--text-primary)}
+  .rail__link.is-visited .rail__mark::after{content:"✓";line-height:1}
+  .rail__link.is-active{background:#fff;color:var(--text-primary);box-shadow:0 1px 3px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.05);font-weight:600}
+  .rail__link.is-active .rail__mark{background:var(--brand-orange);border-color:var(--brand-orange);transform:scale(1.1)}
+  .rail__link.is-active .rail__mark::after{content:"";display:block;width:.6rem;height:.6rem;border-radius:50%;background:#151515}
+  .rail__num{display:inline-block;font-variant-numeric:tabular-nums;opacity:.6;margin-right:.2rem}
+  .rail__footer{margin-top:2.4rem;padding-top:1.6rem;border-top:1px solid rgba(0,0,0,.08);font-size:1.2rem;color:var(--text-muted)}
+  .rail__footer a{text-decoration:underline}
+
+  .rail-chip{display:none}
+  @media(max-width:1024px){
+    .rail{display:none}
+    .rail-chip{display:flex;position:fixed;bottom:1.6rem;left:1.6rem;right:1.6rem;background:var(--text-primary);color:#fff;border:none;border-radius:99px;padding:1.2rem 1.6rem;align-items:center;justify-content:space-between;font-size:1.4rem;font-weight:500;z-index:60;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+    .rail-chip__count{background:var(--brand-orange);color:#151515;border-radius:99px;padding:.2rem .8rem;font-size:1.2rem;font-weight:600}
+  }
+  .rail-drawer{position:fixed;inset:auto 0 0 0;max-height:80vh;background:var(--stone-50);z-index:70;border-top-left-radius:20px;border-top-right-radius:20px;transform:translateY(100%);transition:transform .3s ease-out;display:flex;flex-direction:column;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+  .rail-drawer.is-open{transform:translateY(0)}
+  .rail-drawer__head{display:flex;align-items:center;justify-content:space-between;padding:2rem;border-bottom:1px solid rgba(0,0,0,.08)}
+  .rail-drawer__head h3{margin:0;font-size:1.6rem}
+  .rail-drawer__close{background:rgba(0,0,0,.06);border:none;border-radius:50%;width:3.2rem;height:3.2rem;font-size:1.6rem}
+  .rail-drawer__body{padding:1.2rem;overflow-y:auto}
+  .rail-drawer__body .rail__list{padding-bottom:1rem}
+
+  /* CONTENT */
+  .content{min-width:0;background:#fff}
+
+  .section{padding:8rem 6rem;position:relative;scroll-margin-top:calc(var(--nav-h) + var(--nav-top) + 2rem)}
+  .section--alt{background:var(--stone-50)}
+  .section--dark{background:var(--stone-10);color:#fff}
+  .section--gradient{background:linear-gradient(180deg,#f2f2f2 0%,#8ba8bd 100%)}
+  .section__head{max-width:72rem;margin:0 auto 4.8rem}
+  .section__eyebrow{font-size:1.2rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.2rem}
+  .section--dark .section__eyebrow{color:rgba(255,255,255,.65)}
+  .section__title{font-size:clamp(2.8rem,3.6vw,4.4rem);line-height:1.1;letter-spacing:-.02em;margin-bottom:1.6rem}
+  .section__lede{font-size:1.8rem;line-height:1.55;color:var(--text-muted);max-width:64rem}
+  .section--dark .section__lede{color:rgba(255,255,255,.75)}
+
+  .peek{margin-top:3.2rem;border-radius:12px;border:1px solid rgba(0,0,0,.08);overflow:hidden;background:#fff}
+  .section--dark .peek{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.12)}
+  .peek summary{cursor:pointer;padding:1.4rem 1.8rem;font-size:1.4rem;font-weight:600;display:flex;align-items:center;gap:.8rem;list-style:none;user-select:none}
+  .peek summary::-webkit-details-marker{display:none}
+  .peek summary::before{content:"ⓘ";font-size:1.2rem;background:var(--text-primary);color:#fff;width:2rem;height:2rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .section--dark .peek summary::before{background:var(--brand-orange);color:#151515}
+  .peek summary::after{content:"+";margin-left:auto;font-size:1.8rem;font-weight:400;transition:transform .2s}
+  .peek[open] summary::after{transform:rotate(45deg)}
+  .peek__body{padding:1.6rem 1.8rem;font-size:1.4rem;line-height:1.65;color:#2b2b2b;background:var(--stone-5);border-top:1px solid rgba(0,0,0,.05)}
+  .section--dark .peek__body{background:rgba(0,0,0,.3);color:#e6e6e6;border-top-color:rgba(255,255,255,.08)}
+  .peek__body p + p{margin-top:1rem}
+
+  /* HERO */
+  .hero{position:relative;min-height:66rem;display:grid;grid-template-columns:1fr;background:#000;color:#fff;overflow:hidden;border-radius:var(--radius-macro);margin:0 6rem 4rem}
+  .hero__media{position:relative;height:66rem}
+  .hero__media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.7}
+  .hero__media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 20%,rgba(0,0,0,.7) 100%)}
+  .hero__copy{position:absolute;left:4rem;bottom:4rem;max-width:60rem;z-index:2}
+  .hero__copy h1{font-size:clamp(3.2rem,5vw,5.6rem);line-height:1.02;letter-spacing:-.02em;margin-bottom:1.6rem;text-shadow:0 2px 12px rgba(0,0,0,.35)}
+  .hero__copy p{font-size:1.7rem;line-height:1.5;margin-bottom:2.4rem;color:rgba(255,255,255,.9);max-width:52rem}
+  .hero__ctas{display:flex;gap:1.2rem;flex-wrap:wrap}
+  .hero__ctas .btn{min-width:16rem;height:5rem}
+  @media(max-width:768px){.hero{margin:0 2rem 3rem}.hero__copy{left:2rem;right:2rem;bottom:2.4rem}.hero__media{height:52rem}}
+
+  /* CARDS / GRIDS */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:120rem;margin:0 auto}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;max-width:120rem;margin:0 auto}
+  @media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+  .card{background:#fff;border-radius:var(--radius-macro);padding:3.2rem 2.6rem;border:1px solid rgba(0,0,0,.06);transition:transform .25s,box-shadow .25s}
+  .card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.08)}
+  .section--dark .card{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#fff}
+  .card__tag{display:inline-block;font-family:var(--font-mono);font-size:1.1rem;font-weight:600;background:var(--stone-50);color:var(--text-primary);padding:.3rem .8rem;border-radius:4px;margin-bottom:1.6rem;border:1px solid rgba(0,0,0,.06)}
+  .section--dark .card__tag{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.15)}
+  .card h3{font-size:2rem;margin-bottom:1rem}
+  .card p{font-size:1.5rem;line-height:1.55;color:var(--text-muted)}
+  .section--dark .card p{color:rgba(255,255,255,.7)}
+
+  /* DIAGRAM: request/response cycle */
+  .cycle{display:flex;align-items:center;justify-content:center;gap:1.6rem;flex-wrap:wrap;max-width:100rem;margin:0 auto;padding:3.2rem;background:#fff;border-radius:var(--radius-macro);border:1px solid rgba(0,0,0,.06)}
+  .cycle__step{flex:1 1 16rem;min-width:16rem;padding:2rem 1.6rem;border-radius:14px;background:var(--stone-50);text-align:center;border:1px solid rgba(0,0,0,.06);position:relative}
+  .cycle__step strong{display:block;font-size:1.5rem;margin-bottom:.4rem}
+  .cycle__step span{font-size:1.2rem;color:var(--text-muted);font-family:var(--font-mono)}
+  .cycle__arrow{font-size:2rem;color:var(--brand-orange);flex-shrink:0}
+  @media(max-width:900px){.cycle__arrow{transform:rotate(90deg)}}
+
+  /* TOOLS LIST */
+  .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:1.6rem;max-width:100rem;margin:0 auto}
+  @media(max-width:640px){.tools{grid-template-columns:1fr}}
+  .tool{display:flex;gap:1.6rem;padding:2rem;background:#fff;border-radius:var(--radius-macro);border:1px solid rgba(0,0,0,.06)}
+  .tool__icon{width:4.8rem;height:4.8rem;border-radius:12px;background:var(--brand-orange);display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0}
+  .tool h4{font-size:1.7rem;margin-bottom:.4rem}
+  .tool p{font-size:1.4rem;color:var(--text-muted);line-height:1.5}
+
+  /* STAT STRIP */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;max-width:100rem;margin:0 auto;text-align:center}
+  @media(max-width:640px){.stats{grid-template-columns:1fr}}
+  .stat{padding:2.4rem}
+  .stat__num{font-size:clamp(3.2rem,4vw,4.8rem);font-weight:600;letter-spacing:-.03em;color:var(--brand-orange);line-height:1}
+  .stat__label{font-size:1.4rem;color:rgba(255,255,255,.7);margin-top:.8rem}
+
+  /* BUSINESS */
+  .biz{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6rem;max-width:120rem;margin:0 auto}
+  @media(max-width:900px){.biz{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.biz{grid-template-columns:1fr}}
+  .biz-card{padding:2.4rem;background:#fff;border-radius:var(--radius-macro);border:1px solid rgba(0,0,0,.06)}
+  .biz-card__price{font-family:var(--font-mono);font-size:1.2rem;color:var(--brand-green);font-weight:600;margin-bottom:.8rem}
+  .biz-card h4{font-size:1.7rem;margin-bottom:.6rem}
+  .biz-card p{font-size:1.3rem;color:var(--text-muted);line-height:1.5}
+
+  /* TIMELINE */
+  .timeline{max-width:80rem;margin:0 auto;position:relative;padding-left:3.2rem}
+  .timeline::before{content:"";position:absolute;left:1rem;top:0;bottom:0;width:2px;background:rgba(255,255,255,.15)}
+  .timeline__item{position:relative;padding:0 0 3.2rem 0}
+  .timeline__item::before{content:"";position:absolute;left:-2.6rem;top:.4rem;width:1.4rem;height:1.4rem;border-radius:50%;background:var(--brand-orange);border:3px solid var(--stone-10)}
+  .timeline__year{font-family:var(--font-mono);font-size:1.2rem;color:var(--brand-orange);font-weight:600;margin-bottom:.4rem}
+  .timeline__item h4{font-size:1.8rem;margin-bottom:.6rem}
+  .timeline__item p{font-size:1.4rem;color:rgba(255,255,255,.7);line-height:1.5;max-width:60rem}
+
+  /* PAGER */
+  .pager{display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:120rem;margin:0 auto;padding:6rem 6rem}
+  .pager a{padding:3.2rem;border-radius:var(--radius-macro);background:var(--stone-50);border:1px solid rgba(0,0,0,.06);transition:background .2s,transform .2s;display:flex;flex-direction:column;gap:.8rem}
+  .pager a:hover{background:#ebebeb;transform:translateY(-2px)}
+  .pager__dir{font-size:1.2rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted)}
+  .pager__title{font-size:2rem;font-weight:600}
+  .pager a:nth-child(2){text-align:right;align-items:flex-end}
+
+  /* FOOTER */
+  .footer{background:#212121;color:#fff;padding:6rem 6rem 3rem;margin-top:6rem}
+  .footer__inner{max-width:1920px;margin:0 auto;display:flex;flex-wrap:wrap;gap:4rem;justify-content:space-between;align-items:flex-start}
+  .footer nav ul{list-style:none;margin:0 0 2rem;padding:0;display:flex;flex-wrap:wrap;gap:2rem}
+  .footer nav a{font-size:1.4rem;opacity:.85}
+  .footer nav a:hover{opacity:1}
+  .footer__legal{font-size:1.2rem;opacity:.6;margin-top:2rem;max-width:40rem}
+
+  @media(max-width:1024px){
+    .navbar__links{display:none}
+    .navbar__burger{display:flex}
+    .section{padding:6rem 2.4rem}
+    .pager{padding:4rem 2.4rem;grid-template-columns:1fr}
+    .footer{padding:4rem 2.4rem 2rem}
+    .hero{margin:0 2.4rem 3rem}
+  }
+  @media(max-width:640px){
+    .hero__copy h1{font-size:3.2rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="navbar" role="banner">
+  <div class="navbar__inner">
+    <div class="navbar__brand">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 409 56" aria-hidden="true" fill="currentColor"><path d="M55.717 18.61C55.717 9.22 49.325 0 35.58 0H0v56h11.992V10.069h21.834c6.732 0 9.9 3.28 9.9 8.541 0 5.374-3.225 8.655-9.9 8.655H24.55c-4.185 0-6.561 2.375-6.561 6.561v3.507h6.675c3.11 0 5.43 1.019 7.353 3.507L43.838 56h14.707l-16.46-20.93c8.767-2.036 13.632-7.805 13.632-16.46M158.214 43.33 137.907 0h-12.784l26.699 56h12.784l26.699-56h-12.784zM98.877 0H86.885v56h11.992zM397.375 0v41.576L363.888 0h-13.802v56h11.596V14.368L395.225 56h13.746V0zM283.507 0l-27.491 56h12.783l3.451-7.184c1.414-3.054 3.677-4.412 7.014-4.412h20.816l-2.489-5.26c-1.527-3.281-4.016-4.809-7.693-4.809h-10.634l10.634-22.06L311.054 56h12.784L296.347 0zM229.769 0h-11.992v56h11.992z"/></svg>
+      <span>Learn Web Dev</span>
+      <span class="navbar__badge">V0 · Foundations</span>
+    </div>
+    <nav aria-label="Levels">
+      <ul class="navbar__links">
+        <li><button aria-current="page">V0 · Foundations</button></li>
+        <li><button>V1 · HTML + CSS</button></li>
+        <li><button>V1.5 · Git + AI</button></li>
+        <li><button>V2 · JavaScript</button></li>
+        <li><button>V3 · TS + React</button></li>
+      </ul>
+    </nav>
+    <div class="navbar__actions">
+      <a href="#main" class="btn btn--ghost-dark">Start</a>
+      <button class="navbar__burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- ============ RAIL ============ -->
+  <aside class="rail" aria-label="Lesson outline">
+    <p class="rail__eyebrow">V0 · Foundations</p>
+    <h2 class="rail__title">Before you code</h2>
+    <p class="rail__sub">9 concepts. No code yet — just the ground you'll stand on.</p>
+    <div class="rail__progress" aria-hidden="true"><span id="railProgress"></span></div>
+    <ol class="rail__list" id="railList">
+      <li class="rail__item"><a href="#what-is-web-dev" class="rail__link" data-target="what-is-web-dev"><span class="rail__mark"></span><span><span class="rail__num">01</span> What web development is</span></a></li>
+      <li class="rail__item"><a href="#how-the-web-works" class="rail__link" data-target="how-the-web-works"><span class="rail__mark"></span><span><span class="rail__num">02</span> How the web works</span></a></li>
+      <li class="rail__item"><a href="#frontend-backend" class="rail__link" data-target="frontend-backend"><span class="rail__mark"></span><span><span class="rail__num">03</span> Frontend vs backend</span></a></li>
+      <li class="rail__item"><a href="#core-languages" class="rail__link" data-target="core-languages"><span class="rail__mark"></span><span><span class="rail__num">04</span> The 3 core languages</span></a></li>
+      <li class="rail__item"><a href="#tools-editors" class="rail__link" data-target="tools-editors"><span class="rail__mark"></span><span><span class="rail__num">05</span> Tools &amp; editors</span></a></li>
+      <li class="rail__item"><a href="#setup" class="rail__link" data-target="setup"><span class="rail__mark"></span><span><span class="rail__num">06</span> Your first setup</span></a></li>
+      <li class="rail__item"><a href="#why-business" class="rail__link" data-target="why-business"><span class="rail__mark"></span><span><span class="rail__num">07</span> Why businesses need it</span></a></li>
+      <li class="rail__item"><a href="#careers-2026" class="rail__link" data-target="careers-2026"><span class="rail__mark"></span><span><span class="rail__num">08</span> Careers in 2026</span></a></li>
+      <li class="rail__item"><a href="#the-road-ahead" class="rail__link" data-target="the-road-ahead"><span class="rail__mark"></span><span><span class="rail__num">09</span> The road ahead</span></a></li>
+    </ol>
+    <div class="rail__footer">
+      <p>V0 is concept-only. <strong>No code required.</strong> Your hands stay clean until V1.</p>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="content" id="main">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="hero__media">
+        <img src="https://media.rivian.com/image/upload/c_limit,w_1920,fl_progressive/f_auto/q_auto/desktop_260115_BRANDON-DELACRUZ_TRI-OFFROAD_0015-FINAL_2_b5dayk?_a=BAVFB+DW0" alt="A car on a mountain road at dusk" loading="eager" fetchpriority="high">
+      </div>
+      <div class="hero__copy">
+        <p class="section__eyebrow" style="color:var(--brand-orange)">V0 · Foundations</p>
+        <h1>Before you write a single line of code, understand the web.</h1>
+        <p>What it is, how it works, who it's for, and what you'll use to build it. Nine concepts. Zero code. Your foundation starts here.</p>
+        <div class="hero__ctas">
+          <a href="#what-is-web-dev" class="btn btn--primary">Start with the basics</a>
+          <a href="v1.html" class="btn btn--ghost">Jump to V1 →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 01 · WHAT IS WEB DEV ============ -->
+    <section class="section section--alt" id="what-is-web-dev">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 01</p>
+        <h2 class="section__title">What web development is</h2>
+        <p class="section__lede">Web development is the craft of building things that people access through a browser. Every page you've ever used — your bank, your email, this one — is a collection of text files that a browser reads, interprets, and paints on screen. A web developer is someone who writes those files, decides how they behave, and connects them to servers that store and serve data.</p>
+        <p class="section__lede" style="margin-top:1.6rem;">It's not one job. It's a family of jobs: the person who designs the layout is a developer. The person who wires the login button to a database is a developer. The person who makes the site fast is a developer. They all write code in the same three languages, just with different priorities.</p>
+      </div>
+
+      <div class="grid-3">
+        <article class="card">
+          <span class="card__tag">The end goal</span>
+          <h3>A working web page</h3>
+          <p>Something a stranger can open on their phone, click, fill out, and get a result from. That's the unit of work. Everything else is a means to it.</p>
+        </article>
+        <article class="card">
+          <span class="card__tag">The raw materials</span>
+          <h3>HTML, CSS, JavaScript</h3>
+          <p>Three languages, each with one job. HTML is structure, CSS is appearance, JS is behavior. Every modern framework is built on top of them.</p>
+        </article>
+        <article class="card">
+          <span class="card__tag">The other half</span>
+          <h3>Servers and data</h3>
+          <p>Somewhere, a computer is answering requests and remembering things. Web development includes talking to that computer — or being the person who runs it.</p>
+        </article>
+      </div>
+
+      <details class="peek">
+        <summary>Peek under the hood — a full web page in 3 lines</summary>
+        <div class="peek__body">
+          <p>There is no magic. The smallest possible web page is three files that a browser reads in order.</p>
+          <p><code>index.html</code> — the structure: headings, paragraphs, images, buttons.<br>
+          <code>style.css</code> — the appearance: colors, spacing, fonts.<br>
+          <code>script.js</code> — the behavior: what happens when you click.</p>
+          <p>By the end of V1, you will have written all three by hand. By the end of V2, you'll understand every line. By the end of V3, you'll be using professional tools that organize them into larger systems.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ============ 02 · HOW THE WEB WORKS ============ -->
+    <section class="section" id="how-the-web-works">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 02</p>
+        <h2 class="section__title">How the web actually works</h2>
+        <p class="section__lede">When you type an address and press Enter, four things happen in under a second. Understanding these four things will make everything else in your career make sense.</p>
+      </div>
+
+      <div class="cycle">
+        <div class="cycle__step"><strong>1 · Your browser</strong><span>browser</span></div>
+        <span class="cycle__arrow">→</span>
+        <div class="cycle__step"><strong>2 · DNS</strong><span>find the server</span></div>
+        <span class="cycle__arrow">→</span>
+        <div class="cycle__step"><strong>3 · The server</strong><span>HTTP request</span></div>
+        <span class="cycle__arrow">→</span>
+        <div class="cycle__step"><strong>4 · The response</strong><span>HTML, CSS, JS</span></div>
+      </div>
+
+      <div style="max-width:100rem;margin:4rem auto 0">
+        <ol style="font-size:1.6rem;line-height:1.7;color:var(--text-muted);padding-left:2rem">
+          <li style="margin-bottom:1.2rem"><strong style="color:var(--text-primary)">Your browser</strong> takes the URL you typed (<code>rivian.com</code>) and asks the operating system "where is this?"</li>
+          <li style="margin-bottom:1.2rem"><strong style="color:var(--text-primary)">DNS</strong> — the "phone book of the internet" — translates <code>rivian.com</code> into a numeric IP address like <code>23.45.67.89</code>. That's the address of the computer that holds the files.</li>
+          <li style="margin-bottom:1.2rem"><strong style="color:var(--text-primary)">Your browser</strong> sends an HTTP request to that address: "give me the page at <code>/</code>."</li>
+          <li><strong style="color:var(--text-primary)">The server</strong> sends back a response — an HTML file, a stylesheet, a script, images. Your browser parses each one and paints the page you see.</li>
+        </ol>
+      </div>
+
+      <details class="peek">
+        <summary>Peek under the hood — see this happen yourself</summary>
+        <div class="peek__body">
+          <p>Open your browser's DevTools (F12 or right-click → Inspect). Go to the <strong>Network</strong> tab. Reload this page. You'll see every file the browser requested, its size, and how long it took.</p>
+          <p>The first entry is the HTML you're reading. The others are CSS, JavaScript, fonts, images. That list <em>is</em> web development. When you build a page, you're curating that list.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ============ 03 · FRONTEND VS BACKEND ============ -->
+    <section class="section section--alt" id="frontend-backend">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 03</p>
+        <h2 class="section__title">Frontend vs. backend</h2>
+        <p class="section__lede">The web has two halves. The <strong>frontend</strong> is what runs in the user's browser — everything they see and touch. The <strong>backend</strong> is what runs on the server — the logic that stores users, calculates prices, and decides who can see what. A "full-stack developer" does both. Most people start with one.</p>
+      </div>
+
+      <div class="grid-2">
+        <article class="card">
+          <span class="card__tag">Runs in the browser</span>
+          <h3>The frontend</h3>
+          <p>Layouts, animations, form validation, button clicks, the whole experience. Written in HTML, CSS, JavaScript — and frameworks like React that organize them.</p>
+          <p style="margin-top:1rem"><strong>You'll start here.</strong> V1, V2, and V3 are all frontend.</p>
+        </article>
+        <article class="card">
+          <span class="card__tag">Runs on the server</span>
+          <h3>The backend</h3>
+          <p>The database, the API, the authentication, the payment processing. Written in Node.js, Python, Go, PHP — or one of dozens of others. Comes after you're comfortable with the frontend.</p>
+          <p style="margin-top:1rem"><strong>Later.</strong> It's where the data lives and the rules are enforced.</p>
+        </article>
+      </div>
+
+      <details class="peek">
+        <summary>Peek under the hood — why the split matters</summary>
+        <div class="peek__body">
+          <p>The frontend is <strong>public</strong>. Anyone can open DevTools and read your code. So the frontend can never be trusted with secrets — passwords, payment logic, admin rules.</p>
+          <p>The backend is <strong>private</strong>. It sits on a server the user can't see. When you log in, the frontend sends your password to the backend; the backend checks it against a database and sends back a token. The frontend then uses that token to prove it's you.</p>
+          <p>This is why "never trust the client" is the first rule of security. It's also why the two halves exist as separate jobs.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ============ 04 · THE 3 CORE LANGUAGES ============ -->
+    <section class="section" id="core-languages">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 04</p>
+        <h2 class="section__title">The three core languages</h2>
+        <p class="section__lede">Every browser speaks exactly three languages. Frameworks come and go; these three are the constant. You'll spend your first months with them.</p>
+      </div>
+
+      <div class="grid-3">
+        <article class="card">
+          <span class="card__tag" style="background:var(--brand-orange);color:#151515;border-color:transparent">HTML</span>
+          <h3>Structure</h3>
+          <p>The skeleton. Headings, paragraphs, links, images, buttons — the meaning and order of content. If HTML is the frame of a house, CSS is the paint.</p>
+        </article>
+        <article class="card">
+          <span class="card__tag" style="background:var(--brand-blue);color:#fff;border-color:transparent">CSS</span>
+          <h3>Appearance</h3>
+          <p>Colors, spacing, layout, typography, animation. CSS decides how the skeleton looks on any screen size, from a phone to a widescreen TV.</p>
+        </article>
+        <article class="card">
+          <span class="card__tag" style="background:var(--brand-green);color:#fff;border-color:transparent">JavaScript</span>
+          <h3>Behavior</h3>
+          <p>What happens when something is clicked, typed, or scrolled. It reads the HTML, changes the CSS, and talks to servers. It's the only one of the three that "runs."</p>
+        </article>
+      </div>
+
+      <details class="peek">
+        <summary>Peek under the hood — why "just learn a framework" fails</summary>
+        <div class="peek__body">
+          <p>Every framework — React, Vue, Svelte, Angular — compiles down to HTML, CSS, and JavaScript. If you know the framework but not the three languages, you can build an app but you can't debug it, optimize it, or explain it in an interview.</p>
+          <p>Senior developers can read a framework's source and see the HTML and JS underneath. That's the skill you're building. Frameworks are just a better way to write the three.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ============ 05 · TOOLS & EDITORS ============ -->
+    <section class="section section--alt" id="tools-editors">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 05</p>
+        <h2 class="section__title">Tools &amp; editors</h2>
+        <p class="section__lede">A developer's tools are like a carpenter's bench. You can build with anything, but good tools make it faster and less painful. Here's what every working developer uses in 2026.</p>
+      </div>
+
+      <div class="tools">
+        <div class="tool">
+          <div class="tool__icon" style="background:var(--brand-blue);color:#fff">VS</div>
+          <div>
+            <h4>VS Code</h4>
+            <p>The default editor. Free, made by Microsoft, runs on every OS, and has an extension for every language. Start here — nothing else is needed.</p>
+          </div>
+        </div>
+        <div class="tool">
+          <div class="tool__icon" style="background:var(--brand-green);color:#fff">GH</div>
+          <div>
+            <h4>Git &amp; GitHub</h4>
+            <p>Version control. Every save is a snapshot you can return to. GitHub hosts your code so others can see it — and so you don't lose it. Taught in V1.5.</p>
+          </div>
+        </div>
+        <div class="tool">
+          <div class="tool__icon" style="background:var(--brand-orange);color:#151515">🔧</div>
+          <div>
+            <h4>Browser DevTools</h4>
+            <p>Built into every browser. Inspect the HTML, change the CSS live, watch the network, debug the JavaScript. You'll use it every day.</p>
+          </div>
+        </div>
+        <div class="tool">
+          <div class="tool__icon" style="background:var(--brand-red);color:#fff">⌨</div>
+          <div>
+            <h4>Terminal</h4>
+            <p>The command line. It looks intimidating — it isn't. You'll need about 15 commands forever, and you'll learn them as you go.</p>
+          </div>
+        </div>
+        <div class="tool">
+          <div class="tool__icon" style="background:#333;color:#fff">AI</div>
+          <div>
+            <h4>AI assistants</h4>
+            <p>Copilot, Cursor, Claude, ChatGPT. Use them as a tutor — ask for explanations, not answers. Taught ethically in V1.5.</p>
+          </div>
+        </div>
+        <div class="tool">
+          <div class="tool__icon" style="background:var(--brand-blue);color:#fff">▲</div>
+          <div>
+            <h4>Deployment</h4>
+            <p>Netlify, Vercel, Render. Push code, get a live URL. Your first project goes live the week you start V1.</p>
+          </div>
+        </div>
+      </div>
+
+      <details class="peek">
+        <summary>Peek under the hood — nothing else is needed</summary>
+        <div class="peek__body">
+          <p>You don't need a paid plan for anything on this list. You don't need a Mac, or 32GB of RAM, or a $3,000 laptop. A 4-year-old Windows machine with 8GB of RAM will build any of the projects in this curriculum.</p>
+          <p>What you <em>do</em> need: a stable internet connection, a browser, and 30–60 minutes a day. Everything else is downloadable and free.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ============ 06 · SETUP ============ -->
+    <section class="section" id="setup">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 06</p>
+        <h2 class="section__title">Your first setup</h2>
+        <p class="section__lede">Before V1, do these five things. It takes about 45 minutes. After this, you're ready to write code.</p>
+      </div>
+
+      <div style="max-width:100rem;margin:0 auto">
+        <ol style="font-size:1.6rem;line-height:1.8;padding-left:2rem">
+          <li style="margin-bottom:1.6rem"><strong>Install VS Code</strong> — from <code>code.visualstudio.com</code>. Accept the defaults. Install two extensions: <em>Prettier</em> (auto-formats your code) and <em>Live Server</em> (reloads your page every time you save).</li>
+          <li style="margin-bottom:1.6rem"><strong>Create a GitHub account</strong> — from <code>github.com</code>. Free. This is where you'll keep every project forever.</li>
+          <li style="margin-bottom:1.6rem"><strong>Install Node.js</strong> — from <code>nodejs.org</code>. Choose the LTS version. This gives you <code>node</code> and <code>npm</code> in your terminal. You won't use them until V2, but installing them now means you won't stop mid-lesson.</li>
+          <li style="margin-bottom:1.6rem"><strong>Install Git</strong> — from <code>git-scm.com</code>. Accept defaults. This is the "save history" tool taught fully in V1.5.</li>
+          <li style="margin-bottom:1.6rem"><strong>Create a folder</strong> called <code>webdev</code> in your home directory. Every project in this curriculum goes inside it.</li>
+        </ol>
+      </div>
+
+      <details class="peek">
+        <summary>Peek under the hood — verify your install</summary>
+        <div class="peek__body">
+          <p>Open a terminal and run:</p>
+          <p style="font-family:var(--font-mono);background:rgba(0,0,0,.05);padding:1rem;border-radius:6px;margin:1rem 0">
+            git --version<br>
+            node --version<br>
+            npm --version<br>
+            code --version
+          </p>
+          <p>If each prints a version number, you're set. If a command says "not found," reinstall that tool and make sure you checked "Add to PATH" during install.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ============ 07 · WHY BUSINESS ============ -->
+    <section class="section section--alt" id="why-business">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 07</p>
+        <h2 class="section__title">Why businesses need web development</h2>
+        <p class="section__lede">The web isn't a hobby. It's where almost all commerce, communication, and information now happens. Every company above a certain size has a website, and every website is built and maintained by someone. Here's the range of what that "someone" does.</p>
+      </div>
+
+      <div class="biz">
+        <div class="biz-card">
+          <p class="biz-card__price">Direct sales</p>
+          <h4>e-commerce</h4>
+          <p>Shopify, Stripe, custom checkout. One developer can unlock millions in revenue by reducing cart abandonment by 2%.</p>
+        </div>
+        <div class="biz-card">
+          <p class="biz-card__price">Cost savings</p>
+          <h4>Internal tools</h4>
+          <p>Every company has a spreadsheet pretending to be software. Replacing it with a proper web app saves hundreds of hours a year.</p>
+        </div>
+        <div class="biz-card">
+          <p class="biz-card__price">Trust</p>
+          <h4>Marketing &amp; brand</h4>
+          <p>A slow or broken site costs sales. A fast, accessible site signals legitimacy. This is why this very page you're reading exists.</p>
+        </div>
+        <div class="biz-card">
+          <p class="biz-card__price">Reach</p>
+          <h4>Global by default</h4>
+          <p>Deploy once, reach anyone with a browser. No shipping containers, no customs, no warehouse. The margin advantage is enormous.</p>
+        </div>
+      </div>
+
+      <details class="peek">
+        <summary>Peek under the hood — who pays for this work</summary>
+        <div class="peek__body">
+          <p>Every industry in 2026 needs web developers:</p>
+          <p><strong>Startups</strong> hire the first few to build the product. <strong>Agencies</strong> build for clients. <strong>Enterprises</strong> build internal systems and public sites. <strong>Governments</strong> build services. <strong>Non-profits</strong> build platforms. <strong>Individuals</strong> build their own businesses.</p>
+          <p>You do not need to be "creative" or "good at math." You need to be reliable, curious, and comfortable with small failures every day.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ============ 08 · CAREERS 2026 ============ -->
+    <section class="section section--dark" id="careers-2026">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 08</p>
+        <h2 class="section__title">Careers &amp; possibilities in 2026</h2>
+        <p class="section__lede">The industry changed shape between 2020 and 2026. AI took over the repetitive parts of coding — boilerplate, syntax lookup, first drafts. What it did <em>not</em> replace is the work of deciding what to build, judging quality, and debugging the strange real-world problems that only humans can understand.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <p class="stat__num">~26M</p>
+          <p class="stat__label">developers worldwide (2026)</p>
+        </div>
+        <div class="stat">
+          <p class="stat__num">+22%</p>
+          <p class="stat__label">projected growth through 2033</p>
+        </div>
+        <div class="stat">
+          <p class="stat__num">~$110k</p>
+          <p class="stat__label">median US frontend salary</p>
+        </div>
+      </div>
+
+      <div class="timeline" style="margin-top:6rem">
+        <div class="timeline__item">
+          <p class="timeline__year">1995–2010</p>
+          <h4>The page era</h4>
+          <p>Websites were documents. HTML and CSS were enough. "Webmaster" was a job title.</p>
+        </div>
+        <div class="timeline__item">
+          <p class="timeline__year">2010–2020</p>
+          <h4>The app era</h4>
+          <p>JavaScript frameworks took over. Web apps started to feel like native desktop apps. React, Vue, Angular, Node.</p>
+        </div>
+        <div class="timeline__item">
+          <p class="timeline__year">2020–2024</p>
+          <h4>The framework wars</h4>
+          <p>Next.js, SvelteKit, Astro. Deployment moved to edge networks. Server components became normal.</p>
+        </div>
+        <div class="timeline__item">
+          <p class="timeline__year">2024–2026</p>
+          <h4>The AI era</h4>
+          <p>AI wrote the boilerplate. Developers became editors, architects, and quality-gate keepers. Judgment became the scarce skill.</p>
+        </div>
+        <div class="timeline__item">
+          <p class="timeline__year">2026 →</p>
+          <h4>What's next</h4>
+          <p>The developers who thrive are the ones who understand the fundamentals deeply enough to guide AI, catch its mistakes, and ship things that actually work.</p>
+        </div>
+      </div>
+
+      <details class="peek">
+        <summary>Peek under the hood — job titles you'll see in 2026</summary>
+        <div class="peek__body">
+          <p><strong>Frontend Developer</strong> — builds what users see. HTML, CSS, JavaScript, and one framework. The most common entry point.</p>
+          <p><strong>Backend Developer</strong> — builds the servers and APIs. Node, Python, Go, databases.</p>
+          <p><strong>Full-Stack Developer</strong> — does both. Common at smaller companies and startups.</p>
+          <p><strong>Design Engineer</strong> — hybrid of designer and developer. Increasingly sought-after because they can ship polished UI without waiting for hand-off.</p>
+          <p><strong>AI Product Engineer</strong> — the newest role. Builds features on top of AI models (chat, search, recommendation). Requires strong fundamentals plus API literacy.</p>
+          <p><strong>Platform / DevOps Engineer</strong> — owns deployment, uptime, and infrastructure. Usually comes after a couple years of application development.</p>
+          <p>You don't need to choose now. Every one of these starts with the same foundation.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ============ 09 · THE ROAD AHEAD ============ -->
+    <section class="section" id="the-road-ahead">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 09</p>
+        <h2 class="section__title">The road ahead</h2>
+        <p class="section__lede">You now know what the web is, how a page reaches a screen, what the three languages do, which tools you'll use, what the industry needs, and where the careers go. That's more context than most bootcamps give in a week. Here's how the rest of this curriculum builds on it.</p>
+      </div>
+
+      <div class="grid-2" style="max-width:100rem">
+        <a href="/v1.html" class="card" style="text-decoration:none;color:inherit">
+          <span class="card__tag">Next · V1</span>
+          <h3>HTML &amp; CSS by example</h3>
+          <p style="color:var(--text-muted);margin-top:.8rem">You'll learn the language of the page by building one and reading it as you go. By the end, you'll have written every section you scroll past. →</p>
+        </a>
+        <div class="card" style="opacity:.6">
+          <span class="card__tag">Later · V1.5</span>
+          <h3>Git, GitHub &amp; AI productivity</h3>
+          <p style="color:var(--text-muted);margin-top:.8rem">Version control, recovery, collaboration, and using AI as a tutor — not a crutch. The meta-skills of a working developer.</p>
+        </div>
+        <div class="card" style="opacity:.6">
+          <span class="card__tag">Later · V2</span>
+          <h3>JavaScript &amp; interactivity</h3>
+          <p style="color:var(--text-muted);margin-top:.8rem">The third language. Events, state, the DOM, debugging. Turn the static pages you built in V1 into living interfaces.</p>
+        </div>
+        <div class="card" style="opacity:.6">
+          <span class="card__tag">Later · V3</span>
+          <h3>TypeScript, React &amp; Next.js</h3>
+          <p style="color:var(--text-muted);margin-top:.8rem">The professional stack. Typed components, server rendering, deployment, real projects. The bridge between "learning" and "shipping."</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PAGER ============ -->
+    <nav class="pager" id="pager" aria-label="Level navigation">
+      <a href="#top">
+        <span class="pager__dir">↑ Back to</span>
+        <span class="pager__title">Start of V0</span>
+      </a>
+      <a href="v1.html">
+        <span class="pager__dir">Begin →</span>
+        <span class="pager__title">V1 · HTML &amp; CSS by example</span>
+      </a>
+    </nav>
+  </main>
+</div>
+
+<!-- RAIL CHIP MOBILE -->
+<button class="rail-chip" id="railChip" aria-expanded="false" aria-controls="railDrawer">
+  <span>📖 Chapters</span>
+  <span class="rail-chip__count" id="railChipCount">1 / 9</span>
+</button>
+
+<div class="rail-drawer" id="railDrawer" aria-hidden="true">
+  <div class="rail-drawer__head">
+    <h3>Before you code</h3>
+    <button class="rail-drawer__close" id="railDrawerClose" aria-label="Close chapters">✕</button>
+  </div>
+  <div class="rail-drawer__body">
+    <ol class="rail__list" id="railListMobile">
+      <li class="rail__item"><a href="#what-is-web-dev" class="rail__link" data-target="what-is-web-dev"><span class="rail__mark"></span><span><span class="rail__num">01</span> What web development is</span></a></li>
+      <li class="rail__item"><a href="#how-the-web-works" class="rail__link" data-target="how-the-web-works"><span class="rail__mark"></span><span><span class="rail__num">02</span> How the web works</span></a></li>
+      <li class="rail__item"><a href="#frontend-backend" class="rail__link" data-target="frontend-backend"><span class="rail__mark"></span><span><span class="rail__num">03</span> Frontend vs backend</span></a></li>
+      <li class="rail__item"><a href="#core-languages" class="rail__link" data-target="core-languages"><span class="rail__mark"></span><span><span class="rail__num">04</span> The 3 core languages</span></a></li>
+      <li class="rail__item"><a href="#tools-editors" class="rail__link" data-target="tools-editors"><span class="rail__mark"></span><span><span class="rail__num">05</span> Tools &amp; editors</span></a></li>
+      <li class="rail__item"><a href="#setup" class="rail__link" data-target="setup"><span class="rail__mark"></span><span><span class="rail__num">06</span> Your first setup</span></a></li>
+      <li class="rail__item"><a href="#why-business" class="rail__link" data-target="why-business"><span class="rail__mark"></span><span><span class="rail__num">07</span> Why businesses need it</span></a></li>
+      <li class="rail__item"><a href="#careers-2026" class="rail__link" data-target="careers-2026"><span class="rail__mark"></span><span><span class="rail__num">08</span> Careers in 2026</span></a></li>
+      <li class="rail__item"><a href="#the-road-ahead" class="rail__link" data-target="the-road-ahead"><span class="rail__mark"></span><span><span class="rail__num">09</span> The road ahead</span></a></li>
+    </ol>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div>
+      <p style="font-weight:600;font-size:1.5rem;margin-bottom:1rem">Learn Web Dev · V0</p>
+      <p class="footer__legal">This page contained no exercises and no code. Its only job was to give you the ground to stand on. When you're ready, V1 turns every concept you just read into a working page.</p>
+    </div>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="#top">Back to top</a></li>
+        <li><a href="/v1.html">Start V1</a></li>
+        <li><a href="https://developer.mozilla.org">MDN</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---- Lesson rail scroll tracking ----
+  const sectionIds = [
+    'what-is-web-dev','how-the-web-works','frontend-backend','core-languages',
+    'tools-editors','setup','why-business','careers-2026','the-road-ahead'
+  ];
+  const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+  const railLinks = document.querySelectorAll('.rail__link');
+  const railProgress = document.getElementById('railProgress');
+  const chipCount = document.getElementById('railChipCount');
+  const total = sections.length;
+  const visited = new Set();
+
+  function linkFor(id) { return Array.from(railLinks).find(l => l.dataset.target === id); }
+
+  function setActive(id) {
+    railLinks.forEach(l => {
+      const isActive = l.dataset.target === id;
+      l.classList.toggle('is-active', isActive);
+      if (isActive) l.setAttribute('aria-current', 'true');
+      else l.removeAttribute('aria-current');
+    });
+    const idx = sectionIds.indexOf(id);
+    if (idx >= 0 && railProgress) railProgress.style.width = ((idx + 1) / total * 100) + '%';
+    if (chipCount) chipCount.textContent = (idx + 1) + ' / ' + total;
+  }
+
+  function markVisited(id) {
+    if (visited.has(id)) return;
+    visited.add(id);
+    const link = linkFor(id);
+    if (link) link.classList.add('is-visited');
+  }
+
+  if (sections.length) {
+    const io = new IntersectionObserver((entries) => {
+      const visible = entries.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible.length) {
+        const id = visible[0].target.id;
+        setActive(id);
+        markVisited(id);
+      }
+    }, { rootMargin: '-30% 0px -55% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] });
+    sections.forEach(s => io.observe(s));
+    setActive(sectionIds[0]);
+  }
+
+  // ---- Mobile rail drawer ----
+  const chip = document.getElementById('railChip');
+  const drawer = document.getElementById('railDrawer');
+  const drawerClose = document.getElementById('railDrawerClose');
+
+  function openDrawer() {
+    if (!drawer) return;
+    drawer.classList.add('is-open');
+    drawer.setAttribute('aria-hidden', 'false');
+    chip.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    if (!drawer) return;
+    drawer.classList.remove('is-open');
+    drawer.setAttribute('aria-hidden', 'true');
+    chip.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+  if (chip) chip.addEventListener('click', openDrawer);
+  if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
+  if (drawer) {
+    drawer.querySelectorAll('a.rail__link').forEach(a => {
+      a.addEventListener('click', () => setTimeout(closeDrawer, 150));
+    });
+  }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+
+  // ---- Mobile navbar (simple) ----
+  const burger = document.getElementById('burger');
+  if (burger) {
+    burger.addEventListener('click', () => {
+      const isOpen = burger.getAttribute('aria-expanded') === 'true';
+      burger.setAttribute('aria-expanded', String(!isOpen));
+    });
+  }
+})();
+</script>
+</body>
+</html>

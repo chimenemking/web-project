@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>V1 · Foundations — Learn Web Development by Building</title>
+<meta name="description" content="A living textbook: learn semantic HTML and modern CSS by reading the very page that demonstrates them." />
+<style>
+  @font-face{font-family:'Adventure';src:url('https://assets.rivian.com/2md5qhoeajym/1Dv0kej9t7tDsPaJlXKU1J/09735d831d661afd8335a2cf9d36310c/Adventure-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:'Adventure';src:url('https://assets.rivian.com/2md5qhoeajym/2KUubGptkAVAoZuBkZ01i8/812892ff786ddbd3305d16883d5a200b/Adventure-SemiBold.woff2') format('woff2');font-weight:600;font-display:swap}
+  @font-face{font-family:'JetBrainsMono';src:url('https://cdn.jsdelivr.net/gh/JetBrains/JetBrainsMono@2.304/fonts/webfonts/JetBrainsMono-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+
+  :root{
+    --stone-5:#f7f7f7; --stone-10:#212121; --stone-50:#f2f2f2; --stone-100:#fff;
+    --brand-orange:#ffac00; --brand-green:#629b5c; --brand-red:#e84826; --brand-blue:#77afd8;
+    --surface-invert:#151515; --text-primary:#151515; --text-muted:#5e5e5e;
+    --radius-mega:80px; --radius-micro:8px; --radius-macro:20px;
+    --rail-w:280px; --nav-h:5.6rem; --nav-top:1.6rem;
+    --font-body:'Adventure','Helvetica Neue',Helvetica,Arial,sans-serif;
+    --font-mono:'JetBrainsMono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{font-size:62.5%;scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + var(--nav-top) + 2rem)}
+  body{margin:0;font-family:var(--font-body);background:#fff;color:var(--text-primary);-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer}
+  h1,h2,h3,h4{margin:0;font-weight:500;letter-spacing:-.02em}
+  p{margin:0}
+
+  /* ============ SKIP LINK ============ */
+  .skip-link{position:absolute;left:1rem;top:-100px;background:var(--brand-orange);color:#151515;padding:.8rem 1.2rem;z-index:999;transition:top .3s;border-radius:4px}
+  .skip-link:focus{top:1rem}
+
+  /* ============ NAVBAR ============ */
+  .navbar{position:fixed;top:var(--nav-top);left:50%;transform:translateX(-50%);width:calc(100% - 3.2rem);max-width:1600px;z-index:100}
+  .navbar__inner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;height:var(--nav-h);padding:0 1.2rem 0 1.6rem;background:#fff;border-radius:8px;border:.1px solid rgba(0,0,0,.08);box-shadow:0 2px 10px rgba(0,0,0,.08)}
+  .navbar__brand{display:flex;align-items:center;gap:1rem;font-weight:600;font-size:1.5rem;letter-spacing:-.02em}
+  .navbar__brand svg{height:1.4rem;width:auto}
+  .navbar__badge{font-size:1.1rem;font-weight:600;padding:.2rem .8rem;background:var(--brand-orange);border-radius:99px;color:#151515;letter-spacing:.04em;text-transform:uppercase}
+  .navbar__links{display:flex;gap:.4rem;list-style:none;margin:0;padding:0;justify-self:center}
+  .navbar__links button{background:transparent;border:none;padding:.8rem 1.2rem;border-radius:99px;font-size:1.4rem;font-weight:500;color:var(--text-primary);transition:background .2s}
+  .navbar__links button:hover,.navbar__links button[aria-current="page"]{background:#f2f2f2}
+  .navbar__actions{display:flex;align-items:center;justify-content:flex-end;gap:.8rem}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:.8rem 1.6rem;border-radius:var(--radius-mega);font-size:1.4rem;font-weight:500;border:none;transition:background .2s,color .2s,border-color .2s;min-height:4rem;cursor:pointer;text-align:center}
+  .btn--primary{background:var(--surface-invert);color:#fff}
+  .btn--primary:hover{background:#333}
+  .btn--ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.7)}
+  .btn--ghost:hover{border-width:2px}
+  .btn--ghost-dark{background:transparent;color:var(--text-primary);border:1px solid var(--text-primary)}
+  .btn--ghost-dark:hover{background:var(--text-primary);color:#fff}
+  .navbar__burger{display:none;background:transparent;border:none;width:3.2rem;height:3.2rem;align-items:center;justify-content:center;flex-direction:column;gap:.4rem}
+  .navbar__burger span{display:block;width:2rem;height:2px;background:var(--text-primary);transition:transform .3s,opacity .3s}
+
+  /* ============ LAYOUT WITH RAIL ============ */
+  .layout{display:grid;grid-template-columns:var(--rail-w) 1fr;min-height:100vh;padding-top:calc(var(--nav-h) + var(--nav-top) + 1.6rem)}
+  @media(max-width:1024px){.layout{grid-template-columns:1fr}}
+
+  /* ============ LESSON RAIL ============ */
+  .rail{
+    position:sticky;top:calc(var(--nav-h) + var(--nav-top) + 1.6rem);
+    height:calc(100vh - var(--nav-h) - var(--nav-top) - 1.6rem);
+    padding:2.8rem 1.6rem 2rem 2.4rem;
+    background:var(--stone-50);
+    border-right:1px solid rgba(0,0,0,.06);
+    overflow-y:auto;
+    z-index:50;
+    font-size:1.3rem;
+  }
+  .rail__eyebrow{font-size:1.1rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.2rem}
+  .rail__title{font-size:1.8rem;font-weight:600;margin-bottom:.4rem;letter-spacing:-.02em}
+  .rail__sub{font-size:1.2rem;color:var(--text-muted);margin-bottom:2.4rem;line-height:1.4}
+  .rail__progress{height:3px;background:rgba(0,0,0,.08);border-radius:99px;overflow:hidden;margin-bottom:2.4rem}
+  .rail__progress span{display:block;height:100%;width:0%;background:var(--brand-orange);transition:width .25s ease-out}
+  .rail__list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.1rem}
+  .rail__item{position:relative}
+  .rail__link{
+    display:flex;align-items:flex-start;gap:1rem;
+    padding:.9rem 1rem;border-radius:6px;
+    color:var(--text-muted);line-height:1.35;
+    transition:background .2s,color .2s;
+  }
+  .rail__link:hover{background:rgba(0,0,0,.04);color:var(--text-primary)}
+  .rail__mark{
+    flex-shrink:0;width:1.6rem;height:1.6rem;margin-top:.1rem;
+    border-radius:50%;border:1.5px solid rgba(0,0,0,.2);
+    display:flex;align-items:center;justify-content:center;
+    transition:background .2s,border-color .2s,transform .2s;
+    font-size:1rem;color:#fff;
+  }
+  .rail__link.is-visited .rail__mark{background:var(--text-primary);border-color:var(--text-primary)}
+  .rail__link.is-visited .rail__mark::after{content:"✓";line-height:1}
+  .rail__link.is-active{
+    background:#fff;color:var(--text-primary);
+    box-shadow:0 1px 3px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.05);
+    font-weight:600;
+  }
+  .rail__link.is-active .rail__mark{
+    background:var(--brand-orange);border-color:var(--brand-orange);
+    transform:scale(1.1);
+  }
+  .rail__link.is-active .rail__mark::after{content:"";display:block;width:.6rem;height:.6rem;border-radius:50%;background:#151515}
+  .rail__num{display:inline-block;font-variant-numeric:tabular-nums;opacity:.6;margin-right:.2rem}
+  .rail__footer{margin-top:2.4rem;padding-top:1.6rem;border-top:1px solid rgba(0,0,0,.08);font-size:1.2rem;color:var(--text-muted)}
+  .rail__footer a{text-decoration:underline}
+
+  /* Rail as bottom chip on mobile */
+  .rail-chip{display:none}
+  @media(max-width:1024px){
+    .rail{display:none}
+    .rail-chip{
+      display:flex;position:fixed;bottom:1.6rem;left:1.6rem;right:1.6rem;
+      background:var(--text-primary);color:#fff;border:none;border-radius:99px;
+      padding:1.2rem 1.6rem;align-items:center;justify-content:space-between;
+      font-size:1.4rem;font-weight:500;z-index:60;
+      box-shadow:0 6px 20px rgba(0,0,0,.25);
+    }
+    .rail-chip__count{background:var(--brand-orange);color:#151515;border-radius:99px;padding:.2rem .8rem;font-size:1.2rem;font-weight:600}
+  }
+  .rail-drawer{
+    position:fixed;inset:auto 0 0 0;max-height:80vh;
+    background:var(--stone-50);z-index:70;
+    border-top-left-radius:20px;border-top-right-radius:20px;
+    transform:translateY(100%);transition:transform .3s ease-out;
+    display:flex;flex-direction:column;
+    box-shadow:0 -10px 40px rgba(0,0,0,.2);
+  }
+  .rail-drawer.is-open{transform:translateY(0)}
+  .rail-drawer__head{display:flex;align-items:center;justify-content:space-between;padding:2rem;border-bottom:1px solid rgba(0,0,0,.08)}
+  .rail-drawer__head h3{margin:0;font-size:1.6rem}
+  .rail-drawer__close{background:rgba(0,0,0,.06);border:none;border-radius:50%;width:3.2rem;height:3.2rem;font-size:1.6rem}
+  .rail-drawer__body{padding:1.2rem;overflow-y:auto}
+  .rail-drawer__body .rail__list{padding-bottom:1rem}
+
+  /* ============ MAIN CONTENT ============ */
+  .content{min-width:0;background:#fff}
+
+  /* ============ SECTION SHELL ============ */
+  .section{padding:8rem 6rem;position:relative;scroll-margin-top:calc(var(--nav-h) + var(--nav-top) + 2rem)}
+  .section--alt{background:var(--stone-50)}
+  .section--dark{background:var(--stone-10);color:#fff}
+  .section--gradient{background:linear-gradient(180deg,#f2f2f2 0%,#8ba8bd 100%)}
+  .section__head{max-width:72rem;margin:0 auto 4.8rem}
+  .section__eyebrow{font-size:1.2rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.2rem}
+  .section--dark .section__eyebrow{color:rgba(255,255,255,.65)}
+  .section__title{font-size:clamp(2.8rem,3.6vw,4.4rem);line-height:1.1;letter-spacing:-.02em;margin-bottom:1.6rem}
+  .section__lede{font-size:1.8rem;line-height:1.55;color:var(--text-muted);max-width:64rem}
+  .section--dark .section__lede{color:rgba(255,255,255,.75)}
+
+  /* ============ "PEEK UNDER THE HOOD" ============ */
+  .peek{margin-top:3.2rem;border-radius:12px;border:1px solid rgba(0,0,0,.08);overflow:hidden;background:#fff}
+  .section--dark .peek{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.12)}
+  .peek summary{cursor:pointer;padding:1.4rem 1.8rem;font-size:1.4rem;font-weight:600;display:flex;align-items:center;gap:.8rem;list-style:none;user-select:none}
+  .peek summary::-webkit-details-marker{display:none}
+  .peek summary::before{content:"</>";font-family:var(--font-mono);font-size:1.1rem;background:var(--text-primary);color:#fff;padding:.2rem .6rem;border-radius:4px}
+  .section--dark .peek summary::before{background:var(--brand-orange);color:#151515}
+  .peek summary::after{content:"+";margin-left:auto;font-size:1.8rem;font-weight:400;transition:transform .2s}
+  .peek[open] summary::after{transform:rotate(45deg)}
+  .peek__body{padding:0 1.8rem 1.8rem;font-family:var(--font-mono);font-size:1.25rem;line-height:1.65;color:#2b2b2b;white-space:pre;overflow-x:auto;tab-size:2;background:var(--stone-5);border-top:1px solid rgba(0,0,0,.05);padding-top:1.6rem}
+  .section--dark .peek__body{background:rgba(0,0,0,.3);color:#e6e6e6;border-top-color:rgba(255,255,255,.08)}
+  .peek__body .tok-tag{color:#b23a48;font-weight:600}
+  .peek__body .tok-attr{color:#a06b00}
+  .peek__body .tok-str{color:#3f7a3f}
+  .peek__body .tok-kw{color:#7c3aed;font-weight:600}
+  .peek__body .tok-com{color:#8a8a8a;font-style:italic}
+
+  /* ============ HERO ============ */
+  .hero{position:relative;min-height:64rem;display:grid;grid-template-columns:1fr;background:#000;color:#fff;overflow:hidden;border-radius:var(--radius-macro);margin:0 6rem 4rem}
+  .hero__media{position:relative;height:64rem}
+  .hero__media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85}
+  .hero__media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.55) 100%)}
+  .hero__copy{position:absolute;left:4rem;bottom:4rem;max-width:56rem;z-index:2}
+  .hero__copy h1{font-size:clamp(3.2rem,5vw,5.6rem);line-height:1.02;letter-spacing:-.02em;margin-bottom:1.6rem;text-shadow:0 2px 12px rgba(0,0,0,.35)}
+  .hero__copy p{font-size:1.7rem;line-height:1.5;margin-bottom:2.4rem;color:rgba(255,255,255,.9);max-width:52rem}
+  .hero__ctas{display:flex;gap:1.2rem;flex-wrap:wrap}
+  .hero__ctas .btn{min-width:16rem;height:5rem}
+  @media(max-width:768px){.hero{margin:0 2rem 3rem}.hero__copy{left:2rem;right:2rem;bottom:2.4rem}.hero__media{height:52rem}}
+
+  /* ============ CONCEPTS GRID (Semantic HTML demo) ============ */
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;max-width:120rem;margin:0 auto}
+  @media(max-width:900px){.grid-3{grid-template-columns:1fr}}
+  .sem-card{padding:3.2rem 2.6rem;background:#fff;border-radius:var(--radius-macro);border:1px solid rgba(0,0,0,.06);transition:transform .25s,box-shadow .25s}
+  .sem-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.08)}
+  .sem-card__tag{display:inline-block;font-family:var(--font-mono);font-size:1.1rem;font-weight:600;background:var(--stone-50);color:var(--text-primary);padding:.3rem .8rem;border-radius:4px;margin-bottom:1.6rem;border:1px solid rgba(0,0,0,.06)}
+  .sem-card h3{font-size:2rem;margin-bottom:1rem}
+  .sem-card p{font-size:1.5rem;line-height:1.55;color:var(--text-muted)}
+
+  /* ============ RESPONSIVE IMAGES DEMO ============ */
+  .resp-demo{max-width:100%;margin:0 auto;border-radius:var(--radius-macro);overflow:hidden;position:relative;background:#111;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+  .resp-demo img{width:100%;height:auto;display:block}
+  .resp-demo__caption{position:absolute;left:2rem;bottom:2rem;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);color:#fff;padding:.8rem 1.4rem;border-radius:99px;font-family:var(--font-mono);font-size:1.2rem}
+
+  /* ============ CSS GRID DEMO ============ */
+  .grid-demo{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;max-width:90rem;margin:0 auto}
+  .grid-demo > div{aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:1.3rem;color:#151515;font-weight:600;transition:transform .2s}
+  .grid-demo > div:hover{transform:scale(1.05)}
+  .grid-demo > div:nth-child(1){background:#ffac00;grid-column:span 2;grid-row:span 2;aspect-ratio:1/1}
+  .grid-demo > div:nth-child(2){background:#629b5c}
+  .grid-demo > div:nth-child(3){background:#77afd8}
+  .grid-demo > div:nth-child(4){background:#e84826;color:#fff}
+  .grid-demo > div:nth-child(5){background:#a09ee0}
+  .grid-demo > div:nth-child(6){background:#f2c94c}
+  .grid-demo > div:nth-child(7){background:#bc9c8a}
+  @media(max-width:640px){.grid-demo{grid-template-columns:repeat(2,1fr)}}
+
+  /* ============ FLEXBOX DEMO ============ */
+  .flex-demo{display:flex;gap:1.2rem;justify-content:center;align-items:center;flex-wrap:wrap;padding:3.2rem;background:#fff;border-radius:var(--radius-macro);border:1px solid rgba(0,0,0,.06);max-width:80rem;margin:0 auto}
+  .flex-demo > div{padding:1.6rem 2.4rem;border-radius:99px;background:var(--stone-50);font-family:var(--font-mono);font-size:1.3rem;font-weight:600;border:1px solid rgba(0,0,0,.06)}
+  .flex-demo > div:nth-child(2){background:var(--text-primary);color:#fff}
+  .flex-demo > div:nth-child(4){padding:3.2rem 2.4rem}
+
+  /* ============ CSS VARIABLES DEMO ============ */
+  .vars-demo{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;max-width:80rem;margin:0 auto}
+  .vars-swatch{aspect-ratio:1;border-radius:16px;display:flex;align-items:flex-end;padding:1.2rem;font-family:var(--font-mono);font-size:1.1rem;color:#fff;font-weight:600}
+  @media(max-width:640px){.vars-demo{grid-template-columns:repeat(2,1fr)}}
+
+  /* ============ FORMS DEMO ============ */
+  .form-demo{max-width:56rem;margin:0 auto;background:#fff;border-radius:var(--radius-macro);padding:3.2rem;border:1px solid rgba(0,0,0,.06);box-shadow:0 10px 40px rgba(0,0,0,.06)}
+  .form-demo label{display:block;font-size:1.4rem;font-weight:600;margin-bottom:.6rem}
+  .form-demo .field{margin-bottom:2rem}
+  .form-demo input{width:100%;padding:1.4rem 1.6rem;border:1.5px solid rgba(0,0,0,.12);border-radius:8px;font-family:inherit;font-size:1.5rem;transition:border-color .2s,box-shadow .2s;background:#fff}
+  .form-demo input:focus{outline:none;border-color:var(--text-primary);box-shadow:0 0 0 3px rgba(21,21,21,.08)}
+  .form-demo input:invalid:not(:placeholder-shown){border-color:var(--brand-red)}
+  .form-demo .hint{font-size:1.2rem;color:var(--text-muted);margin-top:.6rem}
+
+  /* ============ MEDIA QUERIES DEMO ============ */
+  .mq-demo{max-width:80rem;margin:0 auto;padding:3.2rem;background:#fff;border-radius:var(--radius-macro);border:1px solid rgba(0,0,0,.06);display:flex;gap:2rem;align-items:center;justify-content:center;flex-wrap:wrap}
+  .mq-pill{padding:1.4rem 2.4rem;border-radius:99px;font-family:var(--font-mono);font-size:1.3rem;font-weight:600;background:var(--stone-50);border:1px solid rgba(0,0,0,.06);transition:background .2s,color .2s}
+  .mq-pill.is-active{background:var(--brand-orange);color:#151515;border-color:transparent}
+
+  /* ============ REDUCED MOTION DEMO ============ */
+  .rm-demo{max-width:80rem;margin:0 auto;padding:3.2rem;background:#fff;border-radius:var(--radius-macro);border:1px solid rgba(0,0,0,.06);display:flex;gap:2rem;align-items:center;justify-content:center;flex-wrap:wrap}
+  .rm-box{width:6rem;height:6rem;border-radius:16px;background:var(--brand-blue);animation:bounce 2s infinite}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6rem)}}
+  @media(prefers-reduced-motion:reduce){
+    .rm-box{animation:none}
+    *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  }
+
+  /* ============ NAV PAGINATION (bottom of page) ============ */
+  .pager{display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:120rem;margin:0 auto;padding:6rem 6rem}
+  .pager a{padding:3.2rem;border-radius:var(--radius-macro);background:var(--stone-50);border:1px solid rgba(0,0,0,.06);transition:background .2s,transform .2s;display:flex;flex-direction:column;gap:.8rem}
+  .pager a:hover{background:#ebebeb;transform:translateY(-2px)}
+  .pager__dir{font-size:1.2rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted)}
+  .pager__title{font-size:2rem;font-weight:600}
+  .pager a:nth-child(2){text-align:right;align-items:flex-end}
+
+  /* ============ FOOTER ============ */
+  .footer{background:#212121;color:#fff;padding:6rem 6rem 3rem;margin-top:6rem}
+  .footer__inner{max-width:1920px;margin:0 auto;display:flex;flex-wrap:wrap;gap:4rem;justify-content:space-between;align-items:flex-start}
+  .footer nav ul{list-style:none;margin:0 0 2rem;padding:0;display:flex;flex-wrap:wrap;gap:2rem}
+  .footer nav a{font-size:1.4rem;opacity:.85}
+  .footer nav a:hover{opacity:1}
+  .footer__legal{font-size:1.2rem;opacity:.6;margin-top:2rem;max-width:40rem}
+
+  /* ============ RESPONSIVE ============ */
+  @media(max-width:1024px){
+    .navbar__links{display:none}
+    .navbar__burger{display:flex}
+    .section{padding:6rem 2.4rem}
+    .pager{padding:4rem 2.4rem;grid-template-columns:1fr}
+    .footer{padding:4rem 2.4rem 2rem}
+    .hero{margin:0 2.4rem 3rem}
+  }
+  @media(max-width:640px){
+    .hero__copy h1{font-size:3.2rem}
+    .grid-3{gap:1.2rem}
+    .nav-badge{display:none}
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- ============ NAVBAR ============ -->
+<header class="navbar" role="banner">
+  <div class="navbar__inner">
+    <div class="navbar__brand">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 409 56" aria-hidden="true" fill="currentColor"><path d="M55.717 18.61C55.717 9.22 49.325 0 35.58 0H0v56h11.992V10.069h21.834c6.732 0 9.9 3.28 9.9 8.541 0 5.374-3.225 8.655-9.9 8.655H24.55c-4.185 0-6.561 2.375-6.561 6.561v3.507h6.675c3.11 0 5.43 1.019 7.353 3.507L43.838 56h14.707l-16.46-20.93c8.767-2.036 13.632-7.805 13.632-16.46M158.214 43.33 137.907 0h-12.784l26.699 56h12.784l26.699-56h-12.784zM98.877 0H86.885v56h11.992zM397.375 0v41.576L363.888 0h-13.802v56h11.596V14.368L395.225 56h13.746V0zM283.507 0l-27.491 56h12.783l3.451-7.184c1.414-3.054 3.677-4.412 7.014-4.412h20.816l-2.489-5.26c-1.527-3.281-4.016-4.809-7.693-4.809h-10.634l10.634-22.06L311.054 56h12.784L296.347 0zM229.769 0h-11.992v56h11.992z"/></svg>
+      <span>Learn Web Dev</span>
+      <span class="navbar__badge">V1 · Foundations</span>
+    </div>
+    <nav aria-label="Levels">
+      <ul class="navbar__links">
+         <li><button>V0 · Foundations</button></li> <!-- NEW -->
+        <li><button aria-current="page">V1 · HTML + CSS</button></li>
+        <li><button>V1.5 · Git + AI</button></li>
+        <li><button>V2 · JavaScript</button></li>
+        <li><button>V3 · TS + React</button></li>
+      </ul>
+    </nav>
+    <div class="navbar__actions">
+      <a href="#main" class="btn btn--ghost-dark">Start learning</a>
+      <button class="navbar__burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ MOBILE NAV ============ -->
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true" style="display:none">
+  <ul style="list-style:none;margin:0;padding:2rem;display:flex;flex-direction:column;gap:.4rem;position:fixed;top:8rem;left:0;right:0;background:#fff;z-index:99;border-bottom:1px solid #eee">
+    <li><button style="width:100%;padding:1.6rem;font-size:1.8rem;text-align:left;background:none;border:none;border-bottom:1px solid #eee">V1 · HTML + CSS</button></li>
+    <li><button style="width:100%;padding:1.6rem;font-size:1.8rem;text-align:left;background:none;border:none;border-bottom:1px solid #eee">V1.5 · Git + AI</button></li>
+    <li><button style="width:100%;padding:1.6rem;font-size:1.8rem;text-align:left;background:none;border:none;border-bottom:1px solid #eee">V2 · JavaScript</button></li>
+    <li><button style="width:100%;padding:1.6rem;font-size:1.8rem;text-align:left;background:none;border:none">V3 · TS + React</button></li>
+  </ul>
+</div>
+
+<!-- ============ LAYOUT WITH RAIL ============ -->
+<div class="layout">
+
+  <!-- ======== LESSON RAIL (desktop) ======== -->
+  <aside class="rail" aria-label="Lesson outline">
+    <p class="rail__eyebrow">V1 · Foundations</p>
+    <h2 class="rail__title">On this page</h2>
+    <p class="rail__sub">8 concepts. Scroll to move forward.</p>
+    <div class="rail__progress" aria-hidden="true"><span id="railProgress"></span></div>
+    <ol class="rail__list" id="railList">
+      <li class="rail__item"><a href="#semantic-html" class="rail__link" data-target="semantic-html"><span class="rail__mark"></span><span><span class="rail__num">01</span> Semantic HTML</span></a></li>
+      <li class="rail__item"><a href="#responsive-images" class="rail__link" data-target="responsive-images"><span class="rail__mark"></span><span><span class="rail__num">02</span> Responsive images</span></a></li>
+      <li class="rail__item"><a href="#css-grid" class="rail__link" data-target="css-grid"><span class="rail__mark"></span><span><span class="rail__num">03</span> CSS Grid</span></a></li>
+      <li class="rail__item"><a href="#flexbox" class="rail__link" data-target="flexbox"><span class="rail__mark"></span><span><span class="rail__num">04</span> Flexbox</span></a></li>
+      <li class="rail__item"><a href="#css-variables" class="rail__link" data-target="css-variables"><span class="rail__mark"></span><span><span class="rail__num">05</span> CSS custom properties</span></a></li>
+      <li class="rail__item"><a href="#forms-inputs" class="rail__link" data-target="forms-inputs"><span class="rail__mark"></span><span><span class="rail__num">06</span> Forms &amp; inputs</span></a></li>
+      <li class="rail__item"><a href="#media-queries" class="rail__link" data-target="media-queries"><span class="rail__mark"></span><span><span class="rail__num">07</span> Media queries</span></a></li>
+      <li class="rail__item"><a href="#reduced-motion" class="rail__link" data-target="reduced-motion"><span class="rail__mark"></span><span><span class="rail__num">08</span> <code style="font-family:var(--font-mono);font-size:1.15rem">prefers-reduced-motion</code></span></a></li>
+    </ol>
+    <div class="rail__footer">
+      <p>V1 is static — no JavaScript is taught here. Next: <a href="#pager">Git &amp; AI →</a></p>
+    </div>
+  </aside>
+
+  <!-- ======== MAIN CONTENT ======== -->
+  <main class="content" id="main">
+    
+
+    <!-- ======== HERO ======== -->
+    <section class="hero" id="top">
+      <div class="hero__media">
+        <picture>
+          <source media="(max-width:744px)" srcset="https://media.rivian.com/image/upload/c_limit,w_744,fl_progressive/f_auto/q_auto/mobile_260115_BRANDON-DELACRUZ_TRI-OFFROAD_0015-FINAL_3_vu1d5q?_a=BAVFB+DW0">
+          <source media="(max-width:1440px)" srcset="https://media.rivian.com/image/upload/c_limit,w_1440,fl_progressive/f_auto/q_auto/desktop_260115_BRANDON-DELACRUZ_TRI-OFFROAD_0015-FINAL_2_b5dayk?_a=BAVFB+DW0">
+          <img src="https://media.rivian.com/image/upload/c_limit,w_1920,fl_progressive/f_auto/q_auto/desktop_260115_BRANDON-DELACRUZ_TRI-OFFROAD_0015-FINAL_2_b5dayk?_a=BAVFB+DW0" alt="A dark-green electric SUV on a mountain road at dusk" loading="eager" fetchpriority="high">
+        </picture>
+      </div>
+      <div class="hero__copy">
+        <p class="section__eyebrow" style="color:var(--brand-orange)">V1 · Foundations</p>
+        <h1>Learn HTML &amp; CSS by reading the page that uses them.</h1>
+        <p>Every section below is a live demo. Every demo explains the exact markup and styles powering it. No videos. No slides. Just the real thing.</p>
+        <div class="hero__ctas">
+          <a href="#semantic-html" class="btn btn--primary">Start with Semantic HTML</a>
+          <a href="#pager" class="btn btn--ghost">Skip to next level →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== 01 · SEMANTIC HTML ======== -->
+    <section class="section section--alt" id="semantic-html">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 01</p>
+        <h2 class="section__title">Semantic HTML</h2>
+        <p class="section__lede">Semantic elements describe <em>what</em> content is, not just how it looks. A <code style="font-family:var(--font-mono);font-size:.9em">&lt;nav&gt;</code> tells browsers and screen readers "this is navigation." A <code style="font-family:var(--font-mono);font-size:.9em">&lt;div&gt;</code> tells them nothing. The three cards below use the correct tags — <code style="font-family:var(--font-mono);font-size:.9em">&lt;article&gt;</code>, <code style="font-family:var(--font-mono);font-size:.9em">&lt;header&gt;</code>, <code style="font-family:var(--font-mono);font-size:.9em">&lt;h3&gt;</code>, <code style="font-family:var(--font-mono);font-size:.9em">&lt;p&gt;</code> — so search engines and assistive tech understand them without any extra hint.</p>
+      </div>
+      <div class="grid-3">
+        <article class="sem-card">
+          <span class="sem-card__tag">&lt;article&gt;</span>
+          <h3>Use landmark tags</h3>
+          <p><code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;aside&gt;</code>, <code>&lt;footer&gt;</code> create a "landmark tree" that screen-reader users can jump between with a single key.</p>
+        </article>
+        <article class="sem-card">
+          <span class="sem-card__tag">&lt;h1&gt;–&lt;h6&gt;</span>
+          <h3>Heading hierarchy</h3>
+          <p>One <code>&lt;h1&gt;</code> per page, then <code>&lt;h2&gt;</code> for sections, <code>&lt;h3&gt;</code> for subsections. Never skip levels — the outline is how document structure is exposed.</p>
+        </article>
+        <article class="sem-card">
+          <span class="sem-card__tag">&lt;button&gt;</span>
+          <h3>Buttons vs. links</h3>
+          <p>If it navigates to a URL, use <code>&lt;a href&gt;</code>. If it triggers an action on the page, use <code>&lt;button&gt;</code>. Screen readers and keyboards behave differently for each.</p>
+        </article>
+      </div>
+      <details class="peek">
+        <summary>Peek under the hood — the markup of the card you're reading</summary>
+        <pre class="peek__body"><span class="tok-tag">&lt;article</span> <span class="tok-attr">class</span>=<span class="tok-str">"sem-card"</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;span</span> <span class="tok-attr">class</span>=<span class="tok-str">"sem-card__tag"</span><span class="tok-tag">&gt;</span>&amp;lt;article&amp;gt;<span class="tok-tag">&lt;/span&gt;</span>
+  <span class="tok-tag">&lt;h3&gt;</span>Use landmark tags<span class="tok-tag">&lt;/h3&gt;</span>
+  <span class="tok-tag">&lt;p&gt;</span>...<span class="tok-tag">&lt;/p&gt;</span>
+<span class="tok-tag">&lt;/article&gt;</span></pre>
+      </details>
+    </section>
+
+    <!-- ======== 02 · RESPONSIVE IMAGES ======== -->
+    <section class="section" id="responsive-images">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 02</p>
+        <h2 class="section__title">Responsive images with <code style="font-family:var(--font-mono)">srcset</code></h2>
+        <p class="section__lede">One image, many files. The browser picks the right resolution for the current screen so a phone doesn't download a 4K JPEG. <code style="font-family:var(--font-mono);font-size:.9em">&lt;picture&gt;</code> + <code style="font-family:var(--font-mono);font-size:.9em">srcset</code> + <code style="font-family:var(--font-mono);font-size:.9em">sizes</code> is the modern trio. Resize your window and watch the URL change in DevTools → Network.</p>
+      </div>
+      <div class="resp-demo">
+        <picture>
+          <source media="(max-width:744px)" srcset="https://media.rivian.com/image/upload/c_limit,w_744,fl_progressive/f_auto/q_auto/desktop_260115_BRANDON-DELACRUZ_TRI-OFFROAD_0015-FINAL_2_b5dayk?_a=BAVFB+DW0 744w, https://media.rivian.com/image/upload/c_limit,w_1488,fl_progressive/f_auto/q_auto/desktop_260115_BRANDON-DELACRUZ_TRI-OFFROAD_0015-FINAL_2_b5dayk?_a=BAVFB+DW0 1488w">
+          <source media="(max-width:1440px)" srcset="https://media.rivian.com/image/upload/c_limit,w_1440,fl_progressive/f_auto/q_auto/desktop_260115_BRANDON-DELACRUZ_TRI-OFFROAD_0015-FINAL_2_b5dayk?_a=BAVFB+DW0 1440w, https://media.rivian.com/image/upload/c_limit,w_2880,fl_progressive/f_auto/q_auto/desktop_260115_BRANDON-DELACRUZ_TRI-OFFROAD_0015-FINAL_2_b5dayk?_a=BAVFB+DW0 2880w">
+          <img src="https://media.rivian.com/image/upload/c_limit,w_1920,fl_progressive/f_auto/q_auto/desktop_260115_BRANDON-DELACRUZ_TRI-OFFROAD_0015-FINAL_2_b5dayk?_a=BAVFB+DW0" alt="A Rivian SUV on a mountain road" loading="lazy">
+        </picture>
+        <span class="resp-demo__caption">srcset · sizes · &lt;picture&gt;</span>
+      </div>
+      <details class="peek">
+        <summary>Peek under the hood — the picture element</summary>
+        <pre class="peek__body"><span class="tok-tag">&lt;picture&gt;</span>
+  <span class="tok-tag">&lt;source</span> <span class="tok-attr">media</span>=<span class="tok-str">"(max-width:744px)"</span>
+          <span class="tok-attr">srcset</span>=<span class="tok-str">"img-744.jpg 744w, img-1488.jpg 1488w"</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;source</span> <span class="tok-attr">media</span>=<span class="tok-str">"(max-width:1440px)"</span>
+          <span class="tok-attr">srcset</span>=<span class="tok-str">"img-1440.jpg 1440w, img-2880.jpg 2880w"</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;img</span> <span class="tok-attr">src</span>=<span class="tok-str">"img-1920.jpg"</span> <span class="tok-attr">alt</span>=<span class="tok-str">"..."</span> <span class="tok-attr">loading</span>=<span class="tok-str">"lazy"</span><span class="tok-tag">&gt;</span>
+<span class="tok-tag">&lt;/picture&gt;</span></pre>
+      </details>
+    </section>
+
+    <!-- ======== 03 · CSS GRID ======== -->
+    <section class="section section--alt" id="css-grid">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 03</p>
+        <h2 class="section__title">CSS Grid</h2>
+        <p class="section__lede">Grid is for two-dimensional layout — rows <em>and</em> columns. You define tracks on the parent, then let children flow or span into them. Below is a 4-column grid where the first tile stretches across 2 columns and 2 rows. <code style="font-family:var(--font-mono);font-size:.9em">grid-column: span 2</code> is doing all the work.</p>
+      </div>
+      <div class="grid-demo">
+        <div>span 2×2</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+        <div>6</div>
+        <div>7</div>
+      </div>
+      <details class="peek">
+        <summary>Peek under the hood — the grid rules</summary>
+        <pre class="peek__body"><span class="tok-kw">.grid-demo</span> {
+  <span class="tok-attr">display</span>: <span class="tok-kw">grid</span>;
+  <span class="tok-attr">grid-template-columns</span>: <span class="tok-kw">repeat</span>(4, 1fr);
+  <span class="tok-attr">gap</span>: 1.2rem;
+}
+<span class="tok-kw">.grid-demo</span> &gt; div:nth-child(1) {
+  <span class="tok-attr">grid-column</span>: <span class="tok-kw">span</span> 2;
+  <span class="tok-attr">grid-row</span>: <span class="tok-kw">span</span> 2;
+}</pre>
+      </details>
+    </section>
+
+    <!-- ======== 04 · FLEXBOX ======== -->
+    <section class="section" id="flexbox">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 04</p>
+        <h2 class="section__title">Flexbox</h2>
+        <p class="section__lede">Flexbox is for one-dimensional layout — a row <em>or</em> a column. You define alignment on the parent with <code style="font-family:var(--font-mono);font-size:.9em">justify-content</code> (main axis) and <code style="font-family:var(--font-mono);font-size:.9em">align-items</code> (cross axis). The pills below are centred and wrap when there's no room. Change <code style="font-family:var(--font-mono);font-size:.9em">justify-content</code> in DevTools and watch them move.</p>
+      </div>
+      <div class="flex-demo">
+        <div>flex</div>
+        <div>justify-content: center</div>
+        <div>align-items: center</div>
+        <div>wrap</div>
+        <div>gap</div>
+      </div>
+      <details class="peek">
+        <summary>Peek under the hood — flex container rules</summary>
+        <pre class="peek__body"><span class="tok-kw">.flex-demo</span> {
+  <span class="tok-attr">display</span>: <span class="tok-kw">flex</span>;
+  <span class="tok-attr">justify-content</span>: <span class="tok-kw">center</span>; <span class="tok-com">/* main axis */</span>
+  <span class="tok-attr">align-items</span>: <span class="tok-kw">center</span>;     <span class="tok-com">/* cross axis */</span>
+  <span class="tok-attr">flex-wrap</span>: <span class="tok-kw">wrap</span>;
+  <span class="tok-attr">gap</span>: 1.2rem;
+}</pre>
+      </details>
+    </section>
+
+    <!-- ======== 05 · CSS VARIABLES ======== -->
+    <section class="section section--alt" id="css-variables">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 05</p>
+        <h2 class="section__title">CSS custom properties</h2>
+        <p class="section__lede">Variables in CSS are written <code style="font-family:var(--font-mono);font-size:.9em">--name: value</code> and read with <code style="font-family:var(--font-mono);font-size:.9em">var(--name)</code>. They cascade — override one on a parent and every child inherits. That's how this entire site's colour system works. The swatches below are literally driven by the tokens in <code style="font-family:var(--font-mono);font-size:.9em">:root</code>.</p>
+      </div>
+      <div class="vars-demo">
+        <div class="vars-swatch" style="background:var(--brand-orange)">--brand-orange</div>
+        <div class="vars-swatch" style="background:var(--brand-green)">--brand-green</div>
+        <div class="vars-swatch" style="background:var(--brand-red)">--brand-red</div>
+        <div class="vars-swatch" style="background:var(--brand-blue)">--brand-blue</div>
+      </div>
+      <details class="peek">
+        <summary>Peek under the hood — defining and reading tokens</summary>
+        <pre class="peek__body"><span class="tok-kw">:root</span> {
+  <span class="tok-attr">--brand-orange</span>: <span class="tok-str">#ffac00</span>;
+  <span class="tok-attr">--brand-green</span>:  <span class="tok-str">#629b5c</span>;
+}
+<span class="tok-kw">.vars-swatch</span> {
+  <span class="tok-attr">background</span>: <span class="tok-kw">var</span>(--brand-orange);
+}</pre>
+      </details>
+    </section>
+
+    <!-- ======== 06 · FORMS & INPUTS ======== -->
+    <section class="section" id="forms-inputs">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 06</p>
+        <h2 class="section__title">Forms &amp; inputs</h2>
+        <p class="section__lede">A form is only useful if it can be filled with a keyboard and validated by the browser. Every input below uses native HTML validation (<code style="font-family:var(--font-mono);font-size:.9em">required</code>, <code style="font-family:var(--font-mono);font-size:.9em">type="email"</code>, <code style="font-family:var(--font-mono);font-size:.9em">minlength</code>) plus CSS pseudo-classes like <code style="font-family:var(--font-mono);font-size:.9em">:invalid</code>, <code style="font-family:var(--font-mono);font-size:.9em">:focus</code>, and <code style="font-family:var(--font-mono);font-size:.9em">:not(:placeholder-shown)</code>. Type a bad email and Tab out — you'll see the red border.</p>
+      </div>
+      <form class="form-demo" onsubmit="event.preventDefault();">
+        <div class="field">
+          <label for="demo-email">Email address</label>
+          <input id="demo-email" name="email" type="email" placeholder="you@example.com" required>
+          <p class="hint">Native <code>type="email"</code> rejects malformed values.</p>
+        </div>
+        <div class="field">
+          <label for="demo-name">Full name</label>
+          <input id="demo-name" name="name" type="text" placeholder="Ada Lovelace" required minlength="2">
+          <p class="hint">Native <code>required</code> + <code>minlength</code> means no JS needed to enforce.</p>
+        </div>
+        <button type="submit" class="btn btn--primary" style="width:100%">Submit</button>
+      </form>
+      <details class="peek">
+        <summary>Peek under the hood — form markup</summary>
+        <pre class="peek__body"><span class="tok-tag">&lt;form&gt;</span>
+  <span class="tok-tag">&lt;label</span> <span class="tok-attr">for</span>=<span class="tok-str">"email"</span><span class="tok-tag">&gt;</span>Email<span class="tok-tag">&lt;/label&gt;</span>
+  <span class="tok-tag">&lt;input</span> <span class="tok-attr">id</span>=<span class="tok-str">"email"</span> <span class="tok-attr">type</span>=<span class="tok-str">"email"</span> <span class="tok-attr">required</span><span class="tok-tag">&gt;</span>
+  <span class="tok-tag">&lt;button</span> <span class="tok-attr">type</span>=<span class="tok-str">"submit"</span><span class="tok-tag">&gt;</span>Submit<span class="tok-tag">&lt;/button&gt;</span>
+<span class="tok-tag">&lt;/form&gt;</span></pre>
+      </details>
+    </section>
+
+    <!-- ======== 07 · MEDIA QUERIES ======== -->
+    <section class="section section--alt" id="media-queries">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 07</p>
+        <h2 class="section__title">Media queries</h2>
+        <p class="section__lede">A media query applies CSS only when a condition is true. Resize the window — at 900px, 640px, and 420px the highlighted pill below changes to match the breakpoint you're currently at. This is the entire mechanism behind responsive design.</p>
+      </div>
+      <div class="mq-demo" id="mqDemo">
+        <span class="mq-pill" data-bp="desktop">&gt; 900px · desktop</span>
+        <span class="mq-pill" data-bp="tablet">≤ 900px · tablet</span>
+        <span class="mq-pill" data-bp="mobile">≤ 640px · mobile</span>
+        <span class="mq-pill" data-bp="small">≤ 420px · small</span>
+      </div>
+      <details class="peek">
+        <summary>Peek under the hood — one breakpoint</summary>
+        <pre class="peek__body"><span class="tok-kw">@media</span> (max-width: 900px) {
+  <span class="tok-kw">.mq-pill</span>[data-bp=<span class="tok-str">"tablet"</span>] {
+    <span class="tok-attr">background</span>: <span class="tok-str">#ffac00</span>;
+  }
+}</pre>
+      </details>
+    </section>
+
+    <!-- ======== 08 · PREFERS-REDUCED-MOTION ======== -->
+    <section class="section section--dark" id="reduced-motion">
+      <div class="section__head">
+        <p class="section__eyebrow">Concept 08</p>
+        <h2 class="section__title">prefers-reduced-motion</h2>
+        <p class="section__lede">Some people experience motion sickness, vestibular disorders, or are just distracted by animation. The user-level setting is respected via a media query. The blue square below bounces — unless you've enabled "Reduce motion" in your OS. Then it stops, with no code on your part beyond the query below.</p>
+      </div>
+      <div class="rm-demo">
+        <div class="rm-box"></div>
+        <p style="font-size:1.5rem;color:rgba(255,255,255,.8);max-width:36rem">Try toggling <strong>System Settings → Accessibility → Reduce motion</strong> while this page is open. The square respects it.</p>
+      </div>
+      <details class="peek">
+        <summary>Peek under the hood — the motion query</summary>
+        <pre class="peek__body"><span class="tok-kw">@media</span> (prefers-reduced-motion: reduce) {
+  <span class="tok-kw">*</span>, <span class="tok-kw">*::before</span>, <span class="tok-kw">*::after</span> {
+    <span class="tok-attr">animation-duration</span>: 0.01ms <span class="tok-kw">!important</span>;
+    <span class="tok-attr">transition-duration</span>: 0.01ms <span class="tok-kw">!important</span>;
+  }
+}</pre>
+      </details>
+    </section>
+
+    <!-- ======== PAGER ======== -->
+    <nav class="pager" id="pager" aria-label="Level navigation">
+      <a href="/v1-5-git-ai.html">
+        <span class="pager__dir">← Next up</span>
+        <span class="pager__title">V1.5 · Git &amp; AI productivity</span>
+      </a>
+      <a href="/v2-js.html" style="text-align:right;align-items:flex-end">
+        <span class="pager__dir">Skip ahead →</span>
+        <span class="pager__title">V2 · JavaScript &amp; interactivity</span>
+      </a>
+    </nav>
+  </main>
+</div>
+
+<!-- ============ RAIL CHIP (mobile) ============ -->
+<button class="rail-chip" id="railChip" aria-expanded="false" aria-controls="railDrawer">
+  <span>📖 Chapters</span>
+  <span class="rail-chip__count" id="railChipCount">1 / 8</span>
+</button>
+
+<!-- ============ RAIL DRAWER (mobile) ============ -->
+<div class="rail-drawer" id="railDrawer" aria-hidden="true">
+  <div class="rail-drawer__head">
+    <h3>On this page</h3>
+    <button class="rail-drawer__close" id="railDrawerClose" aria-label="Close chapters">✕</button>
+  </div>
+  <div class="rail-drawer__body">
+    <ol class="rail__list" id="railListMobile">
+      <li class="rail__item"><a href="#semantic-html" class="rail__link" data-target="semantic-html"><span class="rail__mark"></span><span><span class="rail__num">01</span> Semantic HTML</span></a></li>
+      <li class="rail__item"><a href="#responsive-images" class="rail__link" data-target="responsive-images"><span class="rail__mark"></span><span><span class="rail__num">02</span> Responsive images</span></a></li>
+      <li class="rail__item"><a href="#css-grid" class="rail__link" data-target="css-grid"><span class="rail__mark"></span><span><span class="rail__num">03</span> CSS Grid</span></a></li>
+      <li class="rail__item"><a href="#flexbox" class="rail__link" data-target="flexbox"><span class="rail__mark"></span><span><span class="rail__num">04</span> Flexbox</span></a></li>
+      <li class="rail__item"><a href="#css-variables" class="rail__link" data-target="css-variables"><span class="rail__mark"></span><span><span class="rail__num">05</span> CSS custom properties</span></a></li>
+      <li class="rail__item"><a href="#forms-inputs" class="rail__link" data-target="forms-inputs"><span class="rail__mark"></span><span><span class="rail__num">06</span> Forms &amp; inputs</span></a></li>
+      <li class="rail__item"><a href="#media-queries" class="rail__link" data-target="media-queries"><span class="rail__mark"></span><span><span class="rail__num">07</span> Media queries</span></a></li>
+      <li class="rail__item"><a href="#reduced-motion" class="rail__link" data-target="reduced-motion"><span class="rail__mark"></span><span><span class="rail__num">08</span> <code>prefers-reduced-motion</code></span></a></li>
+    </ol>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer__inner">
+    <div>
+      <p style="font-weight:600;font-size:1.5rem;margin-bottom:1rem">Learn Web Dev · V1</p>
+      <p class="footer__legal">The page you just read is the lesson. Everything you saw was HTML and CSS — no JavaScript was used to render it. Next stop: version control and using AI as a study partner.</p>
+    </div>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="#top">Back to top</a></li>
+        <li><a href="#pager">Next level</a></li>
+        <li><a href="https://developer.mozilla.org">MDN</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     LESSON RAIL — scroll tracking
+     Uses IntersectionObserver to update:
+       - active link (dot filled)
+       - visited state (checkmark)
+       - progress bar width
+       - mobile chip count (X / N)
+     ============================================================ */
+  const sectionIds = [
+    'semantic-html','responsive-images','css-grid','flexbox',
+    'css-variables','forms-inputs','media-queries','reduced-motion'
+  ];
+  const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+  const railLinks = document.querySelectorAll('.rail__link');
+  const railProgress = document.getElementById('railProgress');
+  const chipCount = document.getElementById('railChipCount');
+  const total = sections.length;
+
+  const visited = new Set();
+
+  // pick the rail link for a given section id
+  function linkFor(id) {
+    return Array.from(railLinks).find(l => l.dataset.target === id);
+  }
+
+  function setActive(id) {
+    railLinks.forEach(l => {
+      const isActive = l.dataset.target === id;
+      l.classList.toggle('is-active', isActive);
+      if (isActive) l.setAttribute('aria-current', 'true');
+      else l.removeAttribute('aria-current');
+    });
+    const idx = sectionIds.indexOf(id);
+    if (idx >= 0 && railProgress) {
+      railProgress.style.width = ((idx + 1) / total * 100) + '%';
+    }
+    if (chipCount) chipCount.textContent = (idx + 1) + ' / ' + total;
+  }
+
+  function markVisited(id) {
+    if (visited.has(id)) return;
+    visited.add(id);
+    const link = linkFor(id);
+    if (link) link.classList.add('is-visited');
+  }
+
+  if (sections.length) {
+    const io = new IntersectionObserver((entries) => {
+      // Sort by visibility ratio, then by top offset
+      const visible = entries
+        .filter(e => e.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible.length) {
+        const id = visible[0].target.id;
+        setActive(id);
+        markVisited(id);
+      }
+    }, {
+      rootMargin: '-30% 0px -55% 0px',
+      threshold: [0, 0.25, 0.5, 0.75, 1]
+    });
+    sections.forEach(s => io.observe(s));
+
+    // mark first section active on load
+    setActive(sectionIds[0]);
+  }
+
+  /* ============================================================
+     MOBILE RAIL DRAWER
+     ============================================================ */
+  const chip = document.getElementById('railChip');
+  const drawer = document.getElementById('railDrawer');
+  const drawerClose = document.getElementById('railDrawerClose');
+
+  function openDrawer() {
+    if (!drawer) return;
+    drawer.classList.add('is-open');
+    drawer.setAttribute('aria-hidden', 'false');
+    chip.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    if (!drawer) return;
+    drawer.classList.remove('is-open');
+    drawer.setAttribute('aria-hidden', 'true');
+    chip.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  if (chip) chip.addEventListener('click', openDrawer);
+  if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
+  // Close when a link inside the drawer is clicked
+  if (drawer) {
+    drawer.querySelectorAll('a.rail__link').forEach(a => {
+      a.addEventListener('click', () => setTimeout(closeDrawer, 150));
+    });
+  }
+  // ESC to close
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDrawer();
+  });
+
+  /* ============================================================
+     MOBILE NAV (simple toggle — same pattern as V2 will teach properly)
+     ============================================================ */
+  const burger = document.getElementById('burger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  if (burger && mobileMenu) {
+    burger.addEventListener('click', () => {
+      const open = mobileMenu.style.display === 'block';
+      mobileMenu.style.display = open ? 'none' : 'block';
+      burger.setAttribute('aria-expanded', String(!open));
+    });
+  }
+
+  /* ============================================================
+     MEDIA QUERY DEMO — highlight current breakpoint pill
+     Pure CSS could do this, but JS here is only for the demo badge.
+     ============================================================ */
+  const mqPills = document.querySelectorAll('.mq-pill');
+  function updateBreakpoint() {
+    const w = window.innerWidth;
+    let active = 'desktop';
+    if (w <= 420) active = 'small';
+    else if (w <= 640) active = 'mobile';
+    else if (w <= 900) active = 'tablet';
+    mqPills.forEach(p => p.classList.toggle('is-active', p.dataset.bp === active));
+  }
+  updateBreakpoint();
+  window.addEventListener('resize', updateBreakpoint, { passive: true });
+})();
+</script>
+</body>
+</html>
